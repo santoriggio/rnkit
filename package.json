@@ -1,0 +1,13 @@
+{
+  "name": "rnkit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/santoriggio/rnkit.git",
+  "author": "Santo <info@santoriggio.it>",
+  "license": "MIT",
+  "workspaces": [
+    "examples",
+    "templates",
+    "packages"
+  ]
+}
