@@ -2,5 +2,8 @@
   "name": "packages",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "aaa": "echo 'sono qui'"
+  }
 }

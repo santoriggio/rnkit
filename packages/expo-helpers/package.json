@@ -1,0 +1,13 @@
+{
+  "name": "expo-helpers",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo 'hello world!'"
+  },
+  "dependencies": {
+    "expo-localization": "~15.0.3",
+    "react-native-mmkv": "^2.12.2"
+  }
+}
