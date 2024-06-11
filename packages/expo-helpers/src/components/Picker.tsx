@@ -3,6 +3,7 @@ import { useStyles } from "../hooks";
 import Box from "./Box";
 import Text from "./Text";
 import { useMemo, useState } from "react";
+import Entypo from "@expo/vector-icons/Entypo";
 type Value = {
   text: string;
   color?: string;
@@ -23,7 +24,7 @@ function isValue(value: any): value is Value {
 }
 export default function Picker(props: PickerProps) {
   const { values = {}, required = false, limit = 1 } = props;
-  const { colors } = useStyles();
+  const { colors, spacing } = useStyles();
   const [selected, setSelected] = useState<string[] | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const selectItem = (key: string) => {
@@ -100,7 +101,13 @@ export default function Picker(props: PickerProps) {
           padding="m"
           style={styles.header}
         >
-          <Text>{header}</Text>
+          <Text style={styles.headerText} marginRight="m">
+            {header}
+          </Text>
+          <Entypo
+            name={visible ? "chevron-up" : "chevron-down"}
+            size={spacing.l}
+          />
         </Box>
 
         {visible && (
@@ -114,8 +121,8 @@ export default function Picker(props: PickerProps) {
                 <Box
                   key={value_key}
                   padding="m"
-                  style={styles.item}
                   onPress={() => selectItem(value_key)}
+                  style={styles.item}
                 >
                   <Text>{text}</Text>
                 </Box>
@@ -133,7 +140,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: "hidden",
   },
-  header: {},
+  header: {
+    alignItems: "center",
+  },
+  headerText: { flex: 1 },
   picker: {},
   item: {
     borderTopWidth: 1,
