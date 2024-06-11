@@ -4,6 +4,7 @@ import Box from "./Box";
 import Text from "./Text";
 import { useMemo, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
+import Checkbox from "./Checkbox";
 type Value = {
   text: string;
   color?: string;
@@ -39,9 +40,12 @@ export default function Picker(props: PickerProps) {
       }
 
       const index = prev.indexOf(key);
+
       if (index >= 0) {
         return selected.filter((x) => x !== key);
       }
+
+      if (prev.length === limit) return prev;
 
       return [...prev, key];
     });
@@ -107,6 +111,7 @@ export default function Picker(props: PickerProps) {
           <Entypo
             name={visible ? "chevron-up" : "chevron-down"}
             size={spacing.l}
+            color={colors.gray}
           />
         </Box>
 
@@ -116,15 +121,30 @@ export default function Picker(props: PickerProps) {
               const value = values[value_key];
               const is_value = isValue(value);
               const text = is_value ? value.text : value;
+              const is_selected = selected && selected.includes(value_key);
+              const is_selectable = selected && selected.length < limit;
 
+              const textColor = () => {
+                if (is_selected) {
+                  return colors.primary;
+                }
+
+                if (is_selectable === false) {
+                  return colors.gray;
+                }
+
+                return undefined;
+              };
               return (
                 <Box
                   key={value_key}
+                  horizontal
                   padding="m"
                   onPress={() => selectItem(value_key)}
                   style={styles.item}
                 >
-                  <Text>{text}</Text>
+                  {limit > 1 && <Checkbox selected={is_selected} />}
+                  <Text color={textColor()}>{text}</Text>
                 </Box>
               );
             })}
@@ -147,5 +167,9 @@ const styles = StyleSheet.create({
   picker: {},
   item: {
     borderTopWidth: 1,
+  },
+  hidden: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.2,
   },
 });
