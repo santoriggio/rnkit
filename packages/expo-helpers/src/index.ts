@@ -4,7 +4,7 @@ import Button, { ButtonProps } from "./components/Button";
 import Text from "./components/Text";
 import TextInput from "./components/TextInput";
 import { useStyles } from "./hooks";
-import { ThemeProvider, config, i18n, useTheme } from "./utils";
+import { ThemeProvider, config, formatDate, i18n, useTheme } from "./utils";
 import deepMerge from "./utils/deepMerge";
 
 export {
@@ -15,6 +15,7 @@ export {
   Picker,
   i18n,
   ThemeProvider,
+  formatDate,
   useTheme,
   config,
   useStyles,
