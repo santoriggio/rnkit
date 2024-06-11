@@ -1,0 +1,17 @@
+# Files e directory da escludere
+__tests__
+docs/
+examples/
+example/
+node_modules/
+dist/
+build/
+coverage/
+.babelrc
+.eslintignore
+.eslintrc
+.gitignore
+.npmrc
+package-lock.json
+yarn.lock
+
