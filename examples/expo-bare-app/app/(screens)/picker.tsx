@@ -13,17 +13,35 @@ const values = {
   city: { text: "City at Night", color: "#2F4F4F" },
   space: { text: "Outer Space", color: "#000000" },
 };
-export default function () {
-  const { spacing } = useStyles();
+export default function() {
+  const { getSpacingSize } = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: "Picker" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.m }}
+        contentContainerStyle={{ padding: getSpacingSize("m") }}
       >
-        <Picker title="Picker" placeholder="Seleziona un elemento" values={values} />
-        <Picker title="Picker limit=5" placeholder="Seleziona più elementi" limit={5} values={values} />
+        <Picker
+          title="Picker"
+          placeholder="Seleziona un elemento"
+          values={values}
+          marginBottom="m"
+        />
+        <Picker
+          title="Picker limit=5"
+          placeholder="Seleziona più elementi"
+          limit={5}
+          marginBottom="m"
+          values={values}
+        />
+
+        <Picker
+          title="Empty picker"
+          placeholder="Seleziona più elementi"
+          limit={5}
+          values={{}}
+        />
       </ScrollView>
     </>
   );

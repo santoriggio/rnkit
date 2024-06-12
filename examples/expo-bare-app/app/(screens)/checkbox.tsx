@@ -4,13 +4,13 @@ import { Checkbox, useStyles, Text } from "expo-helpers";
 import { useState } from "react";
 export default function () {
   const [selected, setSelected] = useState<boolean>(false);
-  const { spacing } = useStyles();
+  const { getSpacingSize } = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: "Checkbox" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.m }}
+        contentContainerStyle={{ padding: getSpacingSize('m') }}
       >
         <Pressable
           onPress={() => {

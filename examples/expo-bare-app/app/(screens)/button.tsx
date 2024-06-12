@@ -58,13 +58,13 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
   );
 };
 export default function () {
-  const { spacing } = useStyles();
+  const { getSpacingSize } = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: "Button" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.m }}
+        contentContainerStyle={{ padding: getSpacingSize('m') }}
       >
         <Box horizontal marginBottom="xl">
           <Text bold style={{ flex: 1, textAlign: "center" }}>

@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
 import { ScrollView } from "react-native";
 import { Button, Text, config, useStyles, useTheme } from "expo-helpers";
+
 export default function () {
-  const { colors, spacing } = useStyles();
+  const { colors, getSpacingSize } = useStyles();
   const { setTheme } = useTheme();
   const themes = config.getProperty("themes");
   return (
@@ -10,7 +11,7 @@ export default function () {
       <Stack.Screen options={{ title: "Theme" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.m }}
+        contentContainerStyle={{ padding: getSpacingSize('m') }}
       >
         {Object.keys(colors).map((color_key) => {
           const color = colors[color_key];
@@ -27,7 +28,7 @@ export default function () {
             setTheme(null);
           }}
         />
-        {Object.keys(themes).map((theme_key) => {
+        {themes && Object.keys(themes).map((theme_key) => {
           // const theme = themes[theme_key];
           return (
             <Button
