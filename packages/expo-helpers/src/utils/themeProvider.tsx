@@ -9,7 +9,7 @@ import { useColorScheme } from "react-native";
 import config from "./config";
 type ThemeCTX = {
   theme: string;
-  setTheme: (theme: string) => void;
+  setTheme: (theme: string | null) => void;
 };
 const ThemeContext = createContext<ThemeCTX>({
   theme: "light",
