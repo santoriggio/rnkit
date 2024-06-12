@@ -14,6 +14,7 @@ type Options = {
 };
 
 type Init = {
+  locale?: string;
   translations: Translations;
   onChangeLocale?: (locale: string) => void;
 };
@@ -36,9 +37,14 @@ class I18n {
     this.translations = init_config.translations;
     this._translation = init_config.translations[this._locale];
     this._onChangeLocale = init_config.onChangeLocale;
+    if (typeof init_config.locale === "string") {
+      this.locale = init_config.locale;
+    }
   }
 
   set locale(value: string) {
+    if (typeof value !== "string") return;
+
     const translation = this.translations[value];
 
     if (typeof translation === "undefined") {
