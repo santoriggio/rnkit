@@ -3,10 +3,11 @@ import {
   TouchableOpacityProps,
   TouchableOpacity,
 } from "react-native";
-import useStyles, { spacingSizes } from "../hooks/useStyles";
+import useStyles, { getSpacingSize } from "../hooks/useStyles";
 import Box, { SpacingProps } from "./Box";
 import { useMemo } from "react";
 import Text from "./Text";
+import { useRawSpacingProps } from "../hooks/useSpacingProps";
 
 export type ButtonProps = {
   title?: string;
@@ -24,6 +25,7 @@ export type ButtonProps = {
 export default function Button(props: ButtonProps) {
   const { title, role = "primary", type = "filled", active = true } = props;
   const { radius, colors } = useStyles();
+  const spacingProps = useRawSpacingProps(props);
   const tint = type === "gray" ? colors.gray : colors[role] || colors.primary;
 
   const onPress = () => {
@@ -47,28 +49,25 @@ export default function Button(props: ButtonProps) {
       container: {
         borderRadius: radius,
         overflow: "hidden",
-        padding: spacingSizes.m,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        margin: props.margin && spacingSizes[props.margin],
-        marginBottom: props.marginBottom && spacingSizes[props.marginBottom],
-        marginTop: props.marginTop && spacingSizes[props.marginTop],
-        marginLeft: props.marginLeft && spacingSizes[props.marginLeft],
-        marginRight: props.marginRight && spacingSizes[props.marginRight],
+        paddingVertical: getSpacingSize("m"),
+        paddingHorizontal: getSpacingSize("xs"),
+        ...spacingProps,
       },
       bg: {
         ...StyleSheet.absoluteFillObject,
         opacity: type === "filled" ? 1 : 0.25,
       },
     });
-  }, [radius, props, type]);
+  }, [radius, spacingProps, type]);
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, props.style]}
-      activeOpacity={0.8}
+      activeOpacity={0.5}
     >
       {type !== "plain" && <Box backgroundColor={tint} style={styles.bg} />}
       <Text bold size="l" color={textColor}>

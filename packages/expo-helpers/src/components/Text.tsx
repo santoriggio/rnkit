@@ -5,8 +5,9 @@ import {
 } from "react-native";
 import { SpacingProps } from "./Box";
 import { PropsWithChildren, useMemo } from "react";
-import useStyles, { spacingSizes } from "../hooks/useStyles";
+import useStyles from "../hooks/useStyles";
 import config, { FontSizes } from "../utils/config";
+import { useRawSpacingProps } from "../hooks/useSpacingProps";
 
 type TextProps = {
   color?: string;
@@ -18,7 +19,7 @@ type TextProps = {
 export default function Text(props: PropsWithChildren<TextProps>) {
   const { color, size = "m", bold } = props;
   const { colors } = useStyles();
-
+  const spacingProps = useRawSpacingProps(props);
   const styles = useMemo(() => {
     const fontSizes = config.getProperty("fontSizes");
     return StyleSheet.create({
@@ -26,20 +27,10 @@ export default function Text(props: PropsWithChildren<TextProps>) {
         color: color || colors.text,
         fontSize: fontSizes[size] || fontSizes.m,
         fontWeight: bold ? "bold" : undefined,
-        margin: props.margin && spacingSizes[props.margin],
-        marginBottom: props.marginBottom && spacingSizes[props.marginBottom],
-        marginTop: props.marginTop && spacingSizes[props.marginTop],
-        marginLeft: props.marginLeft && spacingSizes[props.marginLeft],
-        marginRight: props.marginRight && spacingSizes[props.marginRight],
-
-        padding: props.padding && spacingSizes[props.padding],
-        paddingBottom: props.paddingBottom && spacingSizes[props.paddingBottom],
-        paddingTop: props.paddingTop && spacingSizes[props.paddingTop],
-        paddingLeft: props.paddingLeft && spacingSizes[props.paddingLeft],
-        paddingRight: props.paddingRight && spacingSizes[props.paddingRight],
+        ...spacingProps,
       },
     });
-  }, [colors.text, color, props, size, bold]);
+  }, [colors.text, color, spacingProps, size, bold]);
 
   return (
     <RNText {...props} style={[styles.style, props.style]}>

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useStyles } from "../hooks";
 import { ReactNode, useMemo } from "react";
 import { Entypo } from "@expo/vector-icons";
@@ -31,7 +31,7 @@ function Placeholder(props: CheckboxProps) {
 }
 export default function Checkbox(props: CheckboxProps) {
   const { selected, color, required = false } = props;
-  const { colors, spacing } = useStyles();
+  const { colors, getSpacingSize } = useStyles();
 
   const tint = useMemo(() => {
     if (color) {
@@ -54,24 +54,32 @@ export default function Checkbox(props: CheckboxProps) {
           )}
         </Box>
       )}
-      <Box horizontal>
+      <Box horizontal style={styles.placeholderContainer}>
         <Box
           marginRight="s"
           style={{
             borderWidth: 2.2,
             backgroundColor: selected ? tint : undefined,
             borderColor: selected ? tint : colors.gray,
-            borderRadius: spacing.s,
-            height: spacing.l,
-            width: spacing.l,
+            borderRadius: getSpacingSize("xs"),
+            height: getSpacingSize("l"),
+            width: getSpacingSize("l"),
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          {selected && <Entypo name="check" color={"white"} size={spacing.m} />}
+          {selected && (
+            <Entypo name="check" color={"white"} size={getSpacingSize("m")} />
+          )}
         </Box>
         <Placeholder {...props} />
       </Box>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  placeholderContainer: {
+    alignItems: "center",
+  },
+});

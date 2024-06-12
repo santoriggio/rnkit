@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
-import { useStyles } from "../hooks";
-import Box from "./Box";
+import { ActivityIndicator, StyleSheet } from "react-native";
+import { useSpacingProps, useStyles } from "../hooks";
+import Box, { SpacingProps } from "./Box";
 import Text from "./Text";
 import { useMemo, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -16,7 +16,8 @@ type PickerProps = {
   values: Record<string, string | Value>;
   required?: boolean;
   limit?: number;
-};
+  loadingOnEmptyValues?: boolean;
+} & SpacingProps;
 function isValue(value: any): value is Value {
   const isObject = typeof value === "object";
   const isNotArray = !Array.isArray(value);
@@ -24,10 +25,18 @@ function isValue(value: any): value is Value {
   return isObject && isNotArray && value.text;
 }
 export default function Picker(props: PickerProps) {
-  const { values = {}, required = false, limit = 1 } = props;
-  const { colors, spacing } = useStyles();
+  const {
+    values = {},
+    required = false,
+    limit = 1,
+    loadingOnEmptyValues = true,
+  } = props;
+  const { colors, getSpacingSize } = useStyles();
+  const spacingProps = useSpacingProps(props);
   const [selected, setSelected] = useState<string[] | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
+  const is_empty =
+    typeof values !== "object" || Object.keys(values).length === 0;
   const selectItem = (key: string) => {
     if (limit === 1) {
       setVisible(false);
@@ -77,7 +86,7 @@ export default function Picker(props: PickerProps) {
     return null;
   }, [props.title, props.placeholder, values, selected]);
   return (
-    <Box>
+    <Box {...spacingProps}>
       {props.title && props.title !== "" && (
         <Box horizontal marginBottom="s">
           <Text bold numberOfLines={1} size="l">
@@ -90,29 +99,28 @@ export default function Picker(props: PickerProps) {
           )}
         </Box>
       )}
-      <Box
-        radius
-        backgroundColor={colors.background}
-        onPress={() => {
-          setVisible((prev) => !prev);
-        }}
-        activeOpacity={0.5}
-        style={styles.container}
-      >
+      <Box backgroundColor={colors.background} style={styles.container}>
         <Box
           horizontal
           backgroundColor={colors.background}
+          onPress={() => {
+            setVisible((prev) => !prev);
+          }}
+          disabled={is_empty}
           padding="m"
           style={styles.header}
         >
-          <Text style={styles.headerText} marginRight="m">
-            {header}
-          </Text>
-          <Entypo
-            name={visible ? "chevron-up" : "chevron-down"}
-            size={spacing.l}
-            color={colors.gray}
-          />
+          <Text style={styles.headerText}>{header}</Text>
+          {loadingOnEmptyValues && is_empty === true ? (
+            <ActivityIndicator size="small" color={colors.gray} />
+          ) : (
+            <Entypo
+              style={{ marginLeft: getSpacingSize("m") }}
+              name={visible ? "chevron-up" : "chevron-down"}
+              size={getSpacingSize("l")}
+              color={colors.gray}
+            />
+          )}
         </Box>
 
         {visible && (
@@ -122,7 +130,8 @@ export default function Picker(props: PickerProps) {
               const is_value = isValue(value);
               const text = is_value ? value.text : value;
               const is_selected = selected && selected.includes(value_key);
-              const is_selectable = selected && selected.length < limit;
+              const is_selectable =
+                limit === 1 || (selected && selected.length < limit);
 
               const textColor = () => {
                 if (is_selected) {
@@ -136,15 +145,21 @@ export default function Picker(props: PickerProps) {
                 return undefined;
               };
               return (
-                <Box
-                  key={value_key}
-                  horizontal
-                  padding="m"
-                  onPress={() => selectItem(value_key)}
-                  style={styles.item}
-                >
-                  {limit > 1 && <Checkbox selected={is_selected} />}
-                  <Text color={textColor()}>{text}</Text>
+                <Box key={value_key}>
+                  <Box
+                    style={styles.separator}
+                    backgroundColor={colors.border}
+                  />
+                  <Box
+                    key={value_key}
+                    horizontal
+                    padding="m"
+                    onPress={() => selectItem(value_key)}
+                    style={styles.item}
+                  >
+                    {limit > 1 && <Checkbox selected={is_selected} />}
+                    <Text color={textColor()}>{text}</Text>
+                  </Box>
                 </Box>
               );
             })}
@@ -165,8 +180,11 @@ const styles = StyleSheet.create({
   },
   headerText: { flex: 1 },
   picker: {},
+  separator: {
+    height: 1,
+  },
   item: {
-    borderTopWidth: 1,
+    alignItems: "center",
   },
   hidden: {
     ...StyleSheet.absoluteFillObject,
