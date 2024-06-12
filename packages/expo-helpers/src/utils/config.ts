@@ -1,6 +1,7 @@
 import { Colors, Theme } from "../hooks/useStyles";
 import deepMerge, { DeepPartial } from "./deepMerge";
 import Store from "./store";
+
 export type FontSizes = {
   "xs": number;
   "s": number;
@@ -16,6 +17,7 @@ export type Config = {
   colors: Colors;
   onChangeTheme?: (theme: string) => void;
   fontSizes: FontSizes & Record<string, number>;
+  mediumSpacingSize?: number;
 };
 //Create a deep partial type
 
@@ -37,14 +39,6 @@ class ConfigClass {
         background: "#161618",
         border: "#212124",
       },
-      fancy: {
-        isDark: false,
-        text: "green",
-        card: "yellow",
-        background: "blue",
-        border: "tomato",
-        primary: "gray",
-      },
     },
     colors: {
       primary: "#0074E4",
@@ -65,8 +59,8 @@ class ConfigClass {
       "2xl": 22,
       "3xl": 24,
     },
+    mediumSpacingSize: 14,
   };
-
   constructor() {}
 
   public getProperty<K extends keyof Config>(key: K): Config[K] | null {
