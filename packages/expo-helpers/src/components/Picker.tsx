@@ -1,8 +1,8 @@
-import { ActivityIndicator, StyleSheet } from "react-native";
-import { useSpacingProps, useStyles } from "../hooks";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { useStyles } from "../hooks";
 import Box, { SpacingProps } from "./Box";
 import Text from "./Text";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import Checkbox from "./Checkbox";
 type Value = {
@@ -18,47 +18,99 @@ type PickerProps = {
   limit?: number;
   loadingOnEmptyValues?: boolean;
 } & SpacingProps;
+type PickerItemProps = {
+  id: string;
+  selected: boolean;
+  onPress: (id: string) => void;
+  text: string;
+  limit: number;
+};
 function isValue(value: any): value is Value {
   const isObject = typeof value === "object";
   const isNotArray = !Array.isArray(value);
 
   return isObject && isNotArray && value.text;
 }
+function PickerItem(props: PickerItemProps) {
+  const { selected, onPress, id, text, limit } = props;
+  const { colors } = useStyles();
+
+  // const is_selectable =
+  //   limit === 1 || (selected && selected.length < limit);
+  const press = () => {
+    onPress(id);
+  };
+  const textColor = useMemo(() => {
+    if (selected) {
+      return colors.primary;
+    }
+
+    // if (is_selectable === false) {
+    //   return colors.gray;
+    // }
+    return colors.text;
+  }, [colors.primary, colors.text, selected]);
+  return (
+    <>
+      <View style={{ height: 1, backgroundColor: colors.border }} />
+      <Box horizontal padding="m" onPress={press} style={styles.item}>
+        {limit > 1 && <Checkbox selected={selected} />}
+        <Text color={textColor}>{text}</Text>
+      </Box>
+    </>
+  );
+}
+// const MemoPickerItem = memo(PickerItem)
 export default function Picker(props: PickerProps) {
-  const {
-    values = {},
-    required = false,
-    limit = 1,
-    loadingOnEmptyValues = true,
-  } = props;
+  const { values = {}, limit = 1, loadingOnEmptyValues = true } = props;
   const { colors, getSpacingSize } = useStyles();
-  const spacingProps = useSpacingProps(props);
   const [selected, setSelected] = useState<string[] | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const is_empty =
     typeof values !== "object" || Object.keys(values).length === 0;
-  const selectItem = (key: string) => {
-    if (limit === 1) {
-      setVisible(false);
-      return setSelected([key]);
-    }
 
-    setSelected((prev) => {
-      if (prev === null) {
-        return [key];
+  const renderList = useCallback(() => {
+    const list = Object.keys(values);
+
+    const selectItem = (key: string) => {
+      if (limit === 1) {
+        setVisible(false);
+        return setSelected([key]);
       }
 
-      const index = prev.indexOf(key);
+      setSelected((prev) => {
+        if (prev === null) {
+          return [key];
+        }
 
-      if (index >= 0) {
-        return selected.filter((x) => x !== key);
-      }
+        const index = prev.indexOf(key);
 
-      if (prev.length === limit) return prev;
+        if (index >= 0) {
+          return selected.filter((x) => x !== key);
+        }
 
-      return [...prev, key];
-    });
-  };
+        if (prev.length === limit) return prev;
+
+        return [...prev, key];
+      });
+    };
+    const renderItem = (key: string) => {
+      const value = values[key];
+      const is_value = isValue(value);
+      return (
+        <PickerItem
+          key={key}
+          id={key}
+          onPress={selectItem}
+          selected={selected && selected.includes(key)}
+          limit={limit}
+          text={is_value ? value.text : value}
+        />
+      );
+    };
+
+    return list.map(renderItem);
+  }, [values, selected, limit]);
   const header = useMemo(() => {
     if (selected && selected.length > 0) {
       let formatted_select = [];
@@ -85,31 +137,28 @@ export default function Picker(props: PickerProps) {
 
     return null;
   }, [props.title, props.placeholder, values, selected]);
+  const onPress = useCallback(() => {
+    setVisible((prev) => !prev);
+  }, []);
+  const dynamicStyles = useMemo(() => {
+    return StyleSheet.create({
+      picker: {},
+      titleContainer: {},
+      container: {},
+      header: {},
+    });
+  }, []);
   return (
-    <Box {...spacingProps}>
-      {props.title && props.title !== "" && (
-        <Box horizontal marginBottom="s">
-          <Text bold numberOfLines={1} size="l">
-            {props.title}{" "}
+    <View style={dynamicStyles.picker}>
+      {typeof props.title === "string" && props.title !== "" && (
+        <Box marginBottom="xs">
+          <Text bold size="l">
+            {props.title}
           </Text>
-          {required && (
-            <Text size="l" bold color={colors.danger}>
-              *
-            </Text>
-          )}
         </Box>
       )}
-      <Box backgroundColor={colors.background} style={styles.container}>
-        <Box
-          horizontal
-          backgroundColor={colors.background}
-          onPress={() => {
-            setVisible((prev) => !prev);
-          }}
-          disabled={is_empty}
-          padding="m"
-          style={styles.header}
-        >
+      <Box style={styles.container}>
+        <Box padding="m" style={styles.header} horizontal onPress={onPress}>
           <Text style={styles.headerText}>{header}</Text>
           {loadingOnEmptyValues && is_empty === true ? (
             <ActivityIndicator size="small" color={colors.gray} />
@@ -123,53 +172,38 @@ export default function Picker(props: PickerProps) {
           )}
         </Box>
 
-        {visible && (
-          <Box style={styles.picker}>
+        {visible && renderList()}
+      </Box>
+    </View>
+  );
+}
+/**
+ *
+ */
+/*
+ *
+ *
+ 
             {Object.keys(values).map((value_key) => {
               const value = values[value_key];
               const is_value = isValue(value);
-              const text = is_value ? value.text : value;
-              const is_selected = selected && selected.includes(value_key);
-              const is_selectable =
-                limit === 1 || (selected && selected.length < limit);
-
-              const textColor = () => {
-                if (is_selected) {
-                  return colors.primary;
-                }
-
-                if (is_selectable === false) {
-                  return colors.gray;
-                }
-
-                return undefined;
-              };
               return (
-                <Box key={value_key}>
-                  <Box
-                    style={styles.separator}
-                    backgroundColor={colors.border}
-                  />
-                  <Box
-                    key={value_key}
-                    horizontal
-                    padding="m"
-                    onPress={() => selectItem(value_key)}
-                    style={styles.item}
-                  >
-                    {limit > 1 && <Checkbox selected={is_selected} />}
-                    <Text color={textColor()}>{text}</Text>
-                  </Box>
-                </Box>
+                <Text key={value_key}>{is_value ? value.text : value}</Text>
+              );
+              return (
+                <PickerItem
+                  key={value_key}
+                  onPress={selectItem}
+                  id={value_key}
+                  limit={limit}
+                  selected={selected && selected.includes(value_key)}
+                  text={is_value ? value.text : value}
+                />
               );
             })}
-          </Box>
-        )}
-      </Box>
-    </Box>
-  );
-}
-
+ *
+ *
+ * */
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
