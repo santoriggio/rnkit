@@ -43,7 +43,6 @@ export function useRawSpacingProps(props: Props): RawReturn {
  * */
 
 function extrapolateValidProps(props: Props, raw: boolean = false) {
-  console.log(props, raw);
   if (typeof props !== "object" || Array.isArray(props)) return {};
 
   let ans = {};

@@ -1,6 +1,6 @@
 import { Box, Text, useStyles } from "expo-helpers";
 import { Stack, router } from "expo-router";
-import { FlatList, ListRenderItem, StyleSheet } from "react-native";
+import { FlatList, ListRenderItem, Pressable, StyleSheet } from "react-native";
 type Screen = {
   screenName: string;
   title: string;
@@ -67,8 +67,8 @@ export default function Page() {
     return (
       <Box
         padding="m"
-        backgroundColor={colors.background}
         disabled={is_separator}
+        backgroundColor={colors.background}
         onPress={() => {
           if (is_separator) {
             return;
