@@ -1,15 +1,51 @@
-import { ScrollView } from "react-native";
+import {
+  ScrollView,
+  Text as RNText,
+  TouchableOpacity,
+  View,
+  ViewProps,
+} from "react-native";
 import { Text, Box } from "expo-helpers";
 import { Stack } from "expo-router";
-export default function () {
+import React, { useState } from "react";
+export default function() {
+  const [visible, setVisible] = useState<boolean>(false);
+  const onPress = () => {
+    setVisible((prev) => !prev);
+  };
   return (
     <>
       <Stack.Screen options={{ title: "Box" }} />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Box backgroundColor={"red"}>
-          <Text>Red box</Text>
-        </Box>
+        <TouchableOpacity onPress={onPress}>
+          <RNText>Press here</RNText>
+        </TouchableOpacity>
+        {visible && renderBoxs(100)}
       </ScrollView>
     </>
   );
 }
+
+function renderBoxs(length: number = 10, useViews: boolean = false) {
+  return Array.from(Array(length).keys()).map((_) => {
+    if (useViews) {
+      return (
+        <View key={_}>
+          <RNText>{_}</RNText>
+          <View>
+            <RNText>{_}</RNText>
+          </View>
+        </View>
+      );
+    }
+    return (
+      <Box key={_} backgroundColor={"red"}>
+        <RNText>{_}</RNText>
+        <Box backgroundColor={"green"}>
+          <RNText>{_}</RNText>
+        </Box>
+      </Box>
+    );
+  });
+}
+
