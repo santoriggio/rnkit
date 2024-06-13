@@ -17,7 +17,7 @@ config.init({
       success: "#F48C06", // Un arancione chiaro per i successi
       danger: "#9D0208", // Un rosso scurissimo per i pericoli
       link: "#D62828", // Rosso acceso per i link
-      gray: "#A89F9D", // Un grigio chiaro per elementi neutri
+      gray: "#7E7E7E",
     },
     forest: {
       isDark: false,
@@ -32,7 +32,7 @@ config.init({
       success: "#1B998B", // Un verde acqua per i successi
       danger: "#D90429", // Un rosso per i pericoli
       link: "#40916C", // Verde acceso per i link
-      gray: "#A9B4A8", // Un grigio verde per elementi neutri
+      gray: "#6E7573",
     },
     flame_dark: {
       isDark: true,
@@ -109,7 +109,7 @@ function App() {
   );
 }
 
-export default function() {
+export default function () {
   return (
     <ThemeProvider>
       <StatusBar />
