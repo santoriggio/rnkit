@@ -1,6 +1,6 @@
 import { Box, Text, useStyles } from "expo-helpers";
 import { Stack, router } from "expo-router";
-import { FlatList, ListRenderItem, Pressable, StyleSheet } from "react-native";
+import { FlatList, ListRenderItem, StyleSheet } from "react-native";
 type Screen = {
   screenName: string;
   title: string;
