@@ -3,7 +3,7 @@ import { ScrollView } from "react-native";
 import { Button, Text, config, useStyles, useTheme } from "expo-helpers";
 
 export default function () {
-  const { colors, getSpacingSize } = useStyles();
+  const { colors, spacing} = useStyles();
   const { setTheme } = useTheme();
   const themes = config.getProperty("themes");
   return (
@@ -11,13 +11,12 @@ export default function () {
       <Stack.Screen options={{ title: "Theme" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: getSpacingSize('m') }}
+        contentContainerStyle={{ padding:spacing.get('m') }}
       >
         {Object.keys(colors).map((color_key) => {
-          const color = colors[color_key];
           return (
             <Text key={color_key}>
-              {color_key}: {JSON.stringify(color)}
+              {color_key}: {JSON.stringify(colors[color_key])}
             </Text>
           );
         })}

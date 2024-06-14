@@ -3,9 +3,8 @@ import {
   Text as RNText,
   TouchableOpacity,
   View,
-  ViewProps,
 } from "react-native";
-import { Text, Box } from "expo-helpers";
+import { Box } from "expo-helpers";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
 export default function() {
