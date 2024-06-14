@@ -6,35 +6,16 @@ import {
   View,
   ViewProps,
 } from "react-native";
-import useStyles, { SpacingSizeKey } from "../hooks/useStyles";
+import useStyles from "../hooks/useStyles";
 import React, { PropsWithChildren, useMemo } from "react";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { SpacingProps } from "../types";
 
 type BoxProps = {
   backgroundColor?: ColorValue;
   horizontal?: boolean;
 } & SpacingProps &
   TouchableOpacityProps;
-
-export const spacingProps = {
-  //margin
-  margin: null,
-  marginBottom: null,
-  marginTop: null,
-  marginLeft: null,
-  marginRight: null,
-  //spacing
-  padding: null,
-  paddingBottom: null,
-  paddingTop: null,
-  paddingLeft: null,
-  paddingRight: null,
-  //radius
-} as const;
-
-export type SpacingProps = Partial<
-  Record<keyof typeof spacingProps, SpacingSizeKey>
->;
 
 function Box({
   backgroundColor,

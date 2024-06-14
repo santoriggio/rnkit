@@ -3,11 +3,12 @@ import {
   TouchableOpacityProps,
   TouchableOpacity,
 } from "react-native";
-import useStyles, { getSpacingSize } from "../hooks/useStyles";
-import Box, { SpacingProps } from "./Box";
+import useStyles from "../hooks/useStyles";
+import Box from "./Box";
 import { useMemo } from "react";
 import Text from "./Text";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { SpacingProps } from "../types";
 
 export type ButtonProps = {
   title?: string;
@@ -24,7 +25,7 @@ export type ButtonProps = {
 
 export default function Button(props: ButtonProps) {
   const { title, role = "primary", type = "filled", active = true } = props;
-  const { radius, colors } = useStyles();
+  const { radius, colors, spacing } = useStyles();
   const spacingProps = useRawSpacingProps(props);
   const tint = type === "gray" ? colors.gray : colors[role] || colors.primary;
 
@@ -47,13 +48,13 @@ export default function Button(props: ButtonProps) {
   const styles = useMemo(() => {
     return StyleSheet.create({
       container: {
-        borderRadius: radius,
+        borderRadius: radius.get("m"),
         overflow: "hidden",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        paddingVertical: getSpacingSize("m"),
-        paddingHorizontal: getSpacingSize("xs"),
+        paddingVertical: spacing.get("m"),
+        paddingHorizontal: spacing.get("xs"),
         ...spacingProps,
       },
       bg: {
@@ -61,7 +62,7 @@ export default function Button(props: ButtonProps) {
         opacity: type === "filled" ? 1 : 0.25,
       },
     });
-  }, [radius, spacingProps, type]);
+  }, [radius, spacingProps, spacing, type]);
 
   return (
     <TouchableOpacity

@@ -12,8 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { SpacingProps, spacingProps } from "../components/Box";
-import { Size, getSpacingSize, isValidSize } from "./useStyles";
+import { Size, SpacingProps } from "../types";
 
 type Props = SpacingProps & Record<any, any>;
 type Return = Partial<Record<keyof SpacingProps, Size>>;
@@ -44,15 +43,16 @@ export function useRawSpacingProps(props: Props): RawReturn {
 
 function extrapolateValidProps(props: Props, raw: boolean = false) {
   if (typeof props !== "object" || Array.isArray(props)) return {};
-
-  let ans = {};
-  for (const prop in props) {
-    if (typeof spacingProps[prop] !== "undefined") {
-      const size = props[prop];
-      if (isValidSize(size)) {
-        ans = { ...ans, [prop]: raw ? getSpacingSize(size) : size };
-      }
-    }
+  if (raw) {
   }
-  return ans;
+  return {};
+  // let ans = {};
+  // for (const prop in props) {
+  //   if (typeof spacingProps[prop] !== "undefined") {
+  //     const size = props[prop];
+  //     if (isValidSize(size)) {
+  //       ans = { ...ans, [prop]: raw ? getSpacingSize(size) : size };
+  //     }
+  //   }
+  // }
 }

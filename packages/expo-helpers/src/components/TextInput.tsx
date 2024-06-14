@@ -6,9 +6,9 @@ import {
 } from "react-native";
 import useStyles from "../hooks/useStyles";
 import { useMemo } from "react";
-import { SpacingProps } from "./Box";
 import config, { FontSizes } from "../utils/config";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { SpacingProps } from "../types";
 type TextInputProps = {
   size?: keyof FontSizes | (string & {});
   color?: ColorValue;

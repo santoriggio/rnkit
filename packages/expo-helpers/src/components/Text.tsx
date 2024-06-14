@@ -3,11 +3,11 @@ import {
   TextProps as RNTextProps,
   StyleSheet,
 } from "react-native";
-import { SpacingProps } from "./Box";
 import { PropsWithChildren, useMemo } from "react";
 import useStyles from "../hooks/useStyles";
 import config, { FontSizes } from "../utils/config";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { SpacingProps } from "../types";
 
 type TextProps = {
   color?: string;

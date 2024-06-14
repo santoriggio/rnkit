@@ -1,4 +1,4 @@
-import { Colors, Theme } from "../hooks/useStyles";
+import { Colors, Theme } from "../types";
 import deepMerge, { DeepPartial } from "./deepMerge";
 import Store from "./store";
 
@@ -17,7 +17,9 @@ export type Config = {
   colors: Colors;
   onChangeTheme?: (theme: string) => void;
   fontSizes: FontSizes & Record<string, number>;
-  mediumSpacingSize?: number;
+  mediumSpacingSize: number;
+  mediumRadiusSize: number;
+  mediumFontSize: number;
 };
 //Create a deep partial type
 
@@ -60,6 +62,8 @@ class ConfigClass {
       "3xl": 24,
     },
     mediumSpacingSize: 14,
+    mediumFontSize: 16,
+    mediumRadiusSize: 10,
   };
   constructor() {}
 

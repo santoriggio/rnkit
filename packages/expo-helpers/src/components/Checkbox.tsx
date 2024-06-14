@@ -1,9 +1,7 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { useStyles } from "../hooks";
 import { ReactNode, useMemo } from "react";
-import { Entypo } from "@expo/vector-icons";
-import Box from "./Box";
-import Text from "./Text";
+import Entypo from "@expo/vector-icons/Entypo";
 type CheckboxProps = {
   /*
    * @default primary
@@ -14,24 +12,27 @@ type CheckboxProps = {
   placeholder?: string | ((props: CheckboxProps) => ReactNode);
   required?: boolean;
 };
-function Placeholder(props: CheckboxProps) {
-  if (typeof props.placeholder === "undefined") return null;
-
-  if (typeof props.placeholder === "string") {
-    return (
-      <Text numberOfLines={1} marginLeft="s">
-        {props.placeholder}
-      </Text>
-    );
-  }
-  if (typeof props.placeholder === "function") {
-    return props.placeholder(props);
-  }
-  return null;
-}
-export default function Checkbox(props: CheckboxProps) {
-  const { selected, color, required = false } = props;
-  const { colors, getSpacingSize } = useStyles();
+// function Placeholder(props: CheckboxProps) {
+//   if (typeof props.placeholder === "undefined") return null;
+//
+//   if (typeof props.placeholder === "string") {
+//     return (
+//       <Text numberOfLines={1} marginLeft="s">
+//         {props.placeholder}
+//       </Text>
+//     );
+//   }
+//   if (typeof props.placeholder === "function") {
+//     return props.placeholder(props);
+//   }
+//   return null;
+// }
+export default function Checkbox({
+  selected,
+  color,
+  // required = true,
+}: CheckboxProps) {
+  const { colors, spacing } = useStyles();
 
   const tint = useMemo(() => {
     if (color) {
@@ -40,6 +41,28 @@ export default function Checkbox(props: CheckboxProps) {
 
     return colors.primary;
   }, [color, colors.primary]);
+  return (
+    <View
+      style={{
+        borderWidth: 2.2,
+        backgroundColor: selected ? tint : undefined,
+        borderColor: selected ? tint : colors.gray,
+        borderRadius: spacing.get("xs"),
+        height: spacing.get("l"),
+        aspectRatio: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {selected && (
+        <Entypo name="check" color="white" size={spacing.get("m")} />
+      )}
+    </View>
+  );
+}
+
+/*
+ 
   return (
     <View>
       {props.title && props.title !== "" && (
@@ -76,10 +99,6 @@ export default function Checkbox(props: CheckboxProps) {
       </Box>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  placeholderContainer: {
-    alignItems: "center",
-  },
-});
+ *
+ *
+ * */
