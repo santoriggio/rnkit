@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import { useStyles } from "../hooks";
 import Text from "./Text";
-import { useMemo, useState } from "react";
+import { PureComponent, useEffect, useMemo, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import Checkbox from "./Checkbox";
 import { SpacingProps } from "../types";
@@ -103,6 +103,7 @@ export default function Picker(props: PickerProps) {
         flexDirection: "row",
         alignItems: "center",
         padding: spacing.get("m"),
+        backgroundColor: colors.background,
       },
       headerText: {
         flex: 1,
@@ -121,7 +122,7 @@ export default function Picker(props: PickerProps) {
         borderColor: colors.border,
       },
     });
-  }, [colors.border, spacing]);
+  }, [colors.border, colors.background, spacing]);
 
   return (
     <View style={styles.picker}>
@@ -178,33 +179,51 @@ type ValueWithId = Value & { id: string };
 const List = ({
   visible,
   values = {},
-  styles,
-  limit,
-  selectItem,
-  selected,
+  // styles,
+  // limit,
+  // selectItem,
+  // selected,
 }: ListProps) => {
-  const list = Object.entries(values).map(([key, value]) => {
-    if (isValue(value)) {
-      return { id: key, ...value };
-    }
+  const chunkSize = 15;
+  const [list, setList] = useState<ValueWithId[]>([]);
 
-    return { id: key, text: value };
-  });
+  useEffect(() => {
+    if (visible) {
+      getChunks();
+    } else {
+      setList([]);
+    }
+    //HACK: Remove eslint error abount getChunks() in the deps array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
+
+  const getChunks = async () => {
+    const formatted_list = Object.entries(values).map(([key, value]) => {
+      if (isValue(value)) {
+        return { id: key, ...value };
+      }
+
+      return { id: key, text: value };
+    });
+    let loadedChunk = 0;
+    const loadChunk = (chunk: ValueWithId[]) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log("chunk", loadedChunk);
+          loadedChunk++;
+          setList((prev) => [...prev, ...chunk]);
+          resolve(true);
+        }, 50);
+      });
+    };
+    for (let i = 0; i < formatted_list.length; i += chunkSize) {
+      const chunk = formatted_list.slice(i, i + chunkSize);
+      await loadChunk(chunk);
+    }
+  };
 
   const renderItem = (value: ValueWithId) => {
-    return (
-      <TouchableOpacity
-        key={value.id}
-        onPress={() => selectItem(value.id)}
-        style={styles.item}
-        activeOpacity={0.8}
-      >
-        {limit > 1 && (
-          <Checkbox selected={selected && selected.includes(value.id)} />
-        )}
-        <Text>{value.text}</Text>
-      </TouchableOpacity>
-    );
+    return <ListItem key={value.id} item={value} />;
   };
 
   if (visible === false) {
@@ -213,3 +232,24 @@ const List = ({
 
   return list.map(renderItem);
 };
+
+class ListItem extends PureComponent<any> {
+  render() {
+    const item = this.props.item;
+    return (
+      <TouchableOpacity
+        // onPress={() => selectItem(value.id)}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          borderTopWidth: 1,
+          padding: 14,
+        }}
+        activeOpacity={0.8}
+      >
+        <Checkbox selected={false} />
+        <Text>{item.text}</Text>
+      </TouchableOpacity>
+    );
+  }
+}
