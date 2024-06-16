@@ -11,18 +11,14 @@
  *
  */
 
-import { useEffect, useState } from "react";
-import { Size, SpacingProps } from "../types";
+import { Size, SpacingProps, spacingProps } from "../types";
+import useStyles, { isValidSize } from "./useStyles";
 
 type Props = SpacingProps & Record<any, any>;
 type Return = Partial<Record<keyof SpacingProps, Size>>;
 type RawReturn = Partial<Record<keyof SpacingProps, number>>;
 export default function useSpacingProps(props: Props): Return {
-  const [r, setR] = useState({});
-  useEffect(() => {
-    setR(extrapolateValidProps(props));
-  }, [props]);
-  return r;
+  return useExtrapolateValidProps(props);
 }
 /*
  * Return the props as numbers and not as sizes
@@ -31,8 +27,7 @@ export default function useSpacingProps(props: Props): Return {
  * */
 
 export function useRawSpacingProps(props: Props): RawReturn {
-  const extrapolated = extrapolateValidProps(props, true);
-  return extrapolated;
+  return useExtrapolateValidProps(props, true);
 }
 /*
  *
@@ -41,18 +36,18 @@ export function useRawSpacingProps(props: Props): RawReturn {
  *
  * */
 
-function extrapolateValidProps(props: Props, raw: boolean = false) {
+function useExtrapolateValidProps(props: Props, raw: boolean = false) {
+  const { spacing } = useStyles();
+
   if (typeof props !== "object" || Array.isArray(props)) return {};
-  if (raw) {
+  let ans = {};
+  for (const prop in props) {
+    if (typeof spacingProps[prop] !== "undefined") {
+      const size = props[prop];
+      if (isValidSize(size)) {
+        ans = { ...ans, [prop]: raw ? spacing.get(size) : size };
+      }
+    }
   }
-  return {};
-  // let ans = {};
-  // for (const prop in props) {
-  //   if (typeof spacingProps[prop] !== "undefined") {
-  //     const size = props[prop];
-  //     if (isValidSize(size)) {
-  //       ans = { ...ans, [prop]: raw ? getSpacingSize(size) : size };
-  //     }
-  //   }
-  // }
+  return ans;
 }

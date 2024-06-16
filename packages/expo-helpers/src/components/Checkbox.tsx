@@ -2,6 +2,8 @@ import { View } from "react-native";
 import { useStyles } from "../hooks";
 import { ReactNode, useMemo } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { SpacingProps } from "../types";
 type CheckboxProps = {
   /*
    * @default primary
@@ -11,7 +13,7 @@ type CheckboxProps = {
   title?: string;
   placeholder?: string | ((props: CheckboxProps) => ReactNode);
   required?: boolean;
-};
+} & SpacingProps;
 // function Placeholder(props: CheckboxProps) {
 //   if (typeof props.placeholder === "undefined") return null;
 //
@@ -31,9 +33,10 @@ export default function Checkbox({
   selected,
   color,
   // required = true,
+  ...props
 }: CheckboxProps) {
   const { colors, spacing } = useStyles();
-
+  const spacingProps = useRawSpacingProps(props);
   const tint = useMemo(() => {
     if (color) {
       return color;
@@ -46,16 +49,17 @@ export default function Checkbox({
       style={{
         borderWidth: 2.2,
         backgroundColor: selected ? tint : undefined,
-        borderColor: selected ? tint : colors.gray,
+        borderColor: selected ? tint : colors.border,
         borderRadius: spacing.get("xs"),
-        height: spacing.get("l"),
+        height: spacing.get("xl"),
         aspectRatio: 1,
         justifyContent: "center",
         alignItems: "center",
+        ...spacingProps,
       }}
     >
       {selected && (
-        <Entypo name="check" color="white" size={spacing.get("m")} />
+        <Entypo name="check" color="white" size={spacing.get("l")} />
       )}
     </View>
   );

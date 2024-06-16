@@ -1,4 +1,6 @@
 # Files e directory da escludere
+
+.DS_Store/
 __tests__
 docs/
 examples/

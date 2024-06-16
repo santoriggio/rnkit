@@ -1,7 +1,7 @@
 import {
   ActivityIndicator,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
   View,
 } from "react-native";
 import { useStyles } from "../hooks";
@@ -10,6 +10,7 @@ import { PureComponent, useEffect, useMemo, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import Checkbox from "./Checkbox";
 import { SpacingProps } from "../types";
+import { useRawSpacingProps } from "../hooks/useSpacingProps";
 type Value = {
   text: string;
   color?: string;
@@ -32,7 +33,8 @@ function isValue(value: any): value is Value {
 }
 export default function Picker(props: PickerProps) {
   const { values = {}, limit = 1, loadingOnEmptyValues = true } = props;
-  const { colors, spacing } = useStyles();
+  const { colors, spacing, radius } = useStyles();
+  const spacingProps = useRawSpacingProps(props);
   const [selected, setSelected] = useState<string[] | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const is_empty =
@@ -90,13 +92,16 @@ export default function Picker(props: PickerProps) {
 
   const styles = useMemo(() => {
     return StyleSheet.create({
-      picker: {},
+      picker: {
+        ...spacingProps,
+      },
       titleContainer: {
         marginBottom: spacing.get("xs"),
       },
       container: {
         borderColor: colors.border,
         borderWidth: 1,
+        borderRadius: radius.get("m"),
         overflow: "hidden",
       },
       header: {
@@ -117,12 +122,14 @@ export default function Picker(props: PickerProps) {
       },
       item: {
         flexDirection: "row",
+        alignItems: "center",
         padding: spacing.get("m"),
         borderTopWidth: 1,
         borderColor: colors.border,
+        backgroundColor: colors.background,
       },
     });
-  }, [colors.border, colors.background, spacing]);
+  }, [colors.border, colors.background, spacing, radius, spacingProps]);
 
   return (
     <View style={styles.picker}>
@@ -179,10 +186,10 @@ type ValueWithId = Value & { id: string };
 const List = ({
   visible,
   values = {},
-  // styles,
-  // limit,
-  // selectItem,
-  // selected,
+  styles,
+  limit,
+  selectItem,
+  selected,
 }: ListProps) => {
   const chunkSize = 15;
   const [list, setList] = useState<ValueWithId[]>([]);
@@ -223,7 +230,18 @@ const List = ({
   };
 
   const renderItem = (value: ValueWithId) => {
-    return <ListItem key={value.id} item={value} />;
+    return (
+      <ListItem
+        key={value.id}
+        item={value}
+        limit={limit}
+        selected={selected && selected.includes(value.id)}
+        onPress={selectItem}
+        styles={{
+          container: styles.item,
+        }}
+      />
+    );
   };
 
   if (visible === false) {
@@ -232,22 +250,23 @@ const List = ({
 
   return list.map(renderItem);
 };
-
-class ListItem extends PureComponent<any> {
+type ListItemProps = {
+  item: ValueWithId;
+  selected: boolean;
+  styles: any;
+  limit: number;
+  onPress: (id: string) => void;
+};
+class ListItem extends PureComponent<ListItemProps> {
   render() {
-    const item = this.props.item;
+    const { item, selected, onPress, limit, styles } = this.props;
     return (
       <TouchableOpacity
-        // onPress={() => selectItem(value.id)}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          borderTopWidth: 1,
-          padding: 14,
-        }}
+        onPress={() => onPress(item.id)}
+        style={styles.container}
         activeOpacity={0.8}
       >
-        <Checkbox selected={false} />
+        {limit > 1 && <Checkbox marginRight="m" selected={selected} />}
         <Text>{item.text}</Text>
       </TouchableOpacity>
     );
