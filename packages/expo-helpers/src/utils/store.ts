@@ -8,6 +8,10 @@ class Store {
       id,
     });
   }
+  //TODO: Test this new method
+  // on(key: string) {
+  //   return useMMKVString(key);
+  // }
 
   set(key: string, value: any) {
     if (typeof value === "undefined") {
@@ -17,16 +21,17 @@ class Store {
     }
   }
 
-  get(key: string) {
-    if (typeof key !== "undefined") {
-      const toReturn = this.mmkv_store.getString(key.toString());
+  get<K extends any>(key: string): K | null {
+    if (typeof key !== "string") return null;
 
-      if (typeof toReturn !== "undefined") return JSON.parse(toReturn);
+    const value = this.mmkv_store.getString(key.toString());
 
-      return null;
+    if (typeof value !== "undefined" && value !== null) {
+      return JSON.parse(value);
     }
-  }
 
+    return null;
+  }
   remove(key: string) {
     if (typeof key !== "undefined") {
       this.mmkv_store.delete(key.toString());

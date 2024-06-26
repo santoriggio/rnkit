@@ -21,6 +21,7 @@ export function useTheme() {
 
 export default function ThemeProvider(props: PropsWithChildren) {
   const colorScheme = useColorScheme();
+  console.log(colorScheme);
   const [theme, set] = useState<string>(config.store.get("theme") || "light");
   useEffect(() => {
     const currentTheme = config.store.get("theme");
@@ -34,6 +35,7 @@ export default function ThemeProvider(props: PropsWithChildren) {
    * newTheme === null to set to "automatic"
    */
   const setTheme = (newTheme: string) => {
+    console.log(newTheme);
     if (newTheme === null || newTheme === "_automatic") {
       //if newTheme is set to automatic remove the key from the store
       config.store.remove("theme");

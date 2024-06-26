@@ -47,4 +47,3 @@ function renderBoxs(length: number = 10, useViews: boolean = false) {
     );
   });
 }
-

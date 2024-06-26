@@ -38,6 +38,15 @@ const screens: (Screen | Separator)[] = [
     screenName: "checkbox",
     title: "✔️ Checkbox",
   },
+
+  {
+    screenName: "alert",
+    title: "🚨 Alert",
+  },
+  {
+    screenName: "input",
+    title: "🔤 Input",
+  },
   {
     separator: true,
     title: "Utils",
