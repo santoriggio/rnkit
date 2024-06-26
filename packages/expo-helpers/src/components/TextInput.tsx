@@ -6,28 +6,26 @@ import {
 } from "react-native";
 import useStyles from "../hooks/useStyles";
 import { useMemo } from "react";
-import config, { FontSizes } from "../utils/config";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
-import { SpacingProps } from "../types";
+import { Size, SpacingProps } from "../types";
 type TextInputProps = {
-  size?: keyof FontSizes | (string & {});
+  size?: Size | (string & {});
   color?: ColorValue;
 } & SpacingProps;
 
 export default function TextInput(props: TextInputProps & RNTextInputProps) {
   const { color, size } = props;
-  const { colors } = useStyles();
+  const { colors, fontSize } = useStyles();
   const spacingProps = useRawSpacingProps(props);
   const styles = useMemo(() => {
-    const fontSizes = config.getProperty("fontSizes");
     return StyleSheet.create({
       container: {
-        fontSize: (size && fontSizes[size]) || fontSizes.m,
+        fontSize: fontSize.get(size),
         color: color || colors.text,
         ...spacingProps,
       },
     });
-  }, [color, size, colors.text, spacingProps]);
+  }, [color, size, colors.text, fontSize, spacingProps]);
 
   return (
     <RNTextInput

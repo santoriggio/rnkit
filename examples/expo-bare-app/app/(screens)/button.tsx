@@ -15,7 +15,7 @@ const getIcon = (role: ButtonProps["role"]) => {
       return "✅";
   }
 
-  return null
+  return "";
 };
 const renderButtons = (role: ButtonProps["role"] = "primary") => {
   return (
@@ -28,7 +28,7 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
           role={role}
           type="plain"
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
@@ -36,7 +36,7 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
           role={role}
           type="gray"
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
@@ -44,14 +44,14 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
           role={role}
           type="tinted"
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
         <Button
           role={role}
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
@@ -59,14 +59,14 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
     </Box>
   );
 };
-export default function () {
-  const { spacing} = useStyles();
+export default function() {
+  const { spacing } = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: "Button" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.get('m') }}
+        contentContainerStyle={{ padding: spacing.get("m") }}
       >
         <Box horizontal marginBottom="xl">
           <Text bold style={{ flex: 1, textAlign: "center" }}>
@@ -87,6 +87,15 @@ export default function () {
         {renderButtons("danger")}
         {renderButtons("warning")}
         {renderButtons("success")}
+        <Box marginBottom="m">
+          <Button
+            title="Loading button"
+            loading
+            onPress={() => {
+              alert("Fetch async call");
+            }}
+          />
+        </Box>
       </ScrollView>
     </>
   );

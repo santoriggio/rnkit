@@ -5,32 +5,30 @@ import {
 } from "react-native";
 import { PropsWithChildren, useMemo } from "react";
 import useStyles from "../hooks/useStyles";
-import config, { FontSizes } from "../utils/config";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
-import { SpacingProps } from "../types";
+import { Size, SpacingProps } from "../types";
 
 type TextProps = {
   color?: string;
-  size?: keyof FontSizes | (string & {});
+  size?: Size | (string & {});
   bold?: boolean;
 } & SpacingProps &
   RNTextProps;
 
 export default function Text(props: PropsWithChildren<TextProps>) {
   const { color, size = "m", bold } = props;
-  const { colors } = useStyles();
+  const { colors, fontSize } = useStyles();
   const spacingProps = useRawSpacingProps(props);
   const styles = useMemo(() => {
-    const fontSizes = config.getProperty("fontSizes");
     return StyleSheet.create({
       style: {
         color: color || colors.text,
-        fontSize: fontSizes[size] || fontSizes.m,
+        fontSize: fontSize.get(size),
         fontWeight: bold ? "bold" : undefined,
         ...spacingProps,
       },
     });
-  }, [colors.text, color, spacingProps, size, bold]);
+  }, [colors.text, fontSize, color, spacingProps, size, bold]);
 
   return (
     <RNText {...props} style={[styles.style, props.style]}>

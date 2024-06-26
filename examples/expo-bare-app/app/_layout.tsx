@@ -1,7 +1,14 @@
-import { Stack } from "expo-router";
-import { ThemeProvider, useStyles, i18n, config } from "expo-helpers";
+import { Stack, router } from "expo-router";
+import {
+  ThemeProvider,
+  useStyles,
+  i18n,
+  config,
+  AlertProvider,
+} from "expo-helpers";
 import { StatusBar, setStatusBarStyle } from "expo-status-bar";
 import { useEffect, useRef } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 config.init({
   themes: {
     flame: {
@@ -109,11 +116,14 @@ function App() {
   );
 }
 
-export default function () {
+export default function() {
   return (
-    <ThemeProvider>
-      <StatusBar />
-      <App />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <StatusBar />
+        <App />
+        <AlertProvider />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

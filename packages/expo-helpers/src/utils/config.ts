@@ -2,21 +2,10 @@ import { Colors, Theme } from "../types";
 import deepMerge, { DeepPartial } from "./deepMerge";
 import Store from "./store";
 
-export type FontSizes = {
-  "xs": number;
-  "s": number;
-  "m": number;
-  "l": number;
-  "xl": number;
-  "2xl": number;
-  "3xl": number;
-};
-
 export type Config = {
   themes: Record<string, Theme>;
   colors: Colors;
   onChangeTheme?: (theme: string) => void;
-  fontSizes: FontSizes & Record<string, number>;
   mediumSpacingSize: number;
   mediumRadiusSize: number;
   mediumFontSize: number;
@@ -52,15 +41,6 @@ class ConfigClass {
       warning: "#ffcc00",
       gray: "#9C9C9C",
     },
-    fontSizes: {
-      "xs": 12,
-      "s": 14,
-      "m": 16,
-      "l": 18,
-      "xl": 20,
-      "2xl": 22,
-      "3xl": 24,
-    },
     mediumSpacingSize: 14,
     mediumFontSize: 16,
     mediumRadiusSize: 10,
@@ -73,11 +53,31 @@ class ConfigClass {
     }
     return this.config[key];
   }
+  public get<K extends keyof Config>(key: K): Config[K] | null {
+    return this.getProperty(key);
+  }
+  public update<K extends keyof Config>(key: K, value: Partial<Config[K]>) {
+    if (this.exists(key) === false) return null;
+
+    this.config[key] = deepMerge(this.config[key], value);
+  }
+  public set<K extends keyof Config>(key: K, value: Config[K]) {
+    if (this.exists(key) === false) return null;
+
+    this.config[key] = value;
+  }
   public init(config: DeepPartial<Config>) {
     this.config = deepMerge(this.config, config);
   }
   get store() {
     return this._store;
+  }
+
+  private exists(key: string): boolean {
+    if (typeof this.config[key] !== "undefined") {
+      return true;
+    }
+    return false;
   }
 }
 

@@ -216,7 +216,6 @@ const List = ({
     const loadChunk = (chunk: ValueWithId[]) => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          console.log("chunk", loadedChunk);
           loadedChunk++;
           setList((prev) => [...prev, ...chunk]);
           resolve(true);

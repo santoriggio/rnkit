@@ -1,39 +1,29 @@
-import {
-  StyleSheet,
-  TouchableOpacityProps,
-  TouchableOpacity,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 import useStyles from "../hooks/useStyles";
 import Box from "./Box";
 import { useMemo } from "react";
 import Text from "./Text";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
-import { SpacingProps } from "../types";
+import { ButtonProps } from "../types";
 
-export type ButtonProps = {
-  title?: string;
-  onPress: (button: ButtonProps) => void;
-  //optional
-  icon?: string;
-  role?: "primary" | "danger" | "info" | "warning" | "success";
-  type?: "plain" | "filled" | "gray" | "tinted";
-  active?: boolean;
-  loading?: boolean;
-  textColor?: string;
-} & SpacingProps &
-  Omit<TouchableOpacityProps, "role">;
-
-export default function Button(props: ButtonProps) {
-  const { title, role = "primary", type = "filled", active = true } = props;
+export default function Button({
+  title,
+  role = "primary",
+  type = "filled",
+  active = true,
+  loading,
+  onPress,
+  ...props
+}: ButtonProps) {
   const { radius, colors, spacing } = useStyles();
   const spacingProps = useRawSpacingProps(props);
   const tint = type === "gray" ? colors.gray : colors[role] || colors.primary;
 
-  const onPress = () => {
-    if (props.loading || active === false) return;
+  const handlePress = () => {
+    if (loading || active === false) return;
 
-    if (typeof props.onPress === "function") {
-      return props.onPress(props);
+    if (typeof onPress === "function") {
+      return onPress();
     }
   };
   const textColor = useMemo(() => {
@@ -61,12 +51,15 @@ export default function Button(props: ButtonProps) {
         ...StyleSheet.absoluteFillObject,
         opacity: type === "filled" ? 1 : 0.25,
       },
+      activityIndicator: {
+        marginLeft: spacing.get("m"),
+      },
     });
   }, [radius, spacingProps, spacing, type]);
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       style={[styles.container, props.style]}
       activeOpacity={0.5}
     >
@@ -74,6 +67,13 @@ export default function Button(props: ButtonProps) {
       <Text bold size="l" color={textColor}>
         {title}
       </Text>
+      {loading && (
+        <ActivityIndicator
+          size="small"
+          color={textColor}
+          style={styles.activityIndicator}
+        />
+      )}
     </TouchableOpacity>
   );
 }
