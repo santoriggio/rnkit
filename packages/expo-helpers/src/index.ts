@@ -3,7 +3,7 @@ import Box from "./components/Box";
 import Button from "./components/Button";
 import Text from "./components/Text";
 import TextInput from "./components/TextInput";
-import { useStyles } from "./hooks";
+import { useDebounce, useStyles } from "./hooks";
 import {
   Store,
   ThemeProvider,
@@ -17,6 +17,7 @@ import deepMerge from "./utils/deepMerge";
 import { ButtonProps } from "./types";
 export {
   Text,
+  useDebounce,
   Checkbox,
   Box,
   Button,
