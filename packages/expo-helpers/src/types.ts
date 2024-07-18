@@ -98,6 +98,7 @@ type ActionPress = ActionPressLink | ActionPressAlert;
 export type Press<T> = VoidPress<T> | ActionPress;
 
 export type InputProps = {
+  initialValue?: string;
   placeholder?: string;
   title?: string;
   required?: boolean;

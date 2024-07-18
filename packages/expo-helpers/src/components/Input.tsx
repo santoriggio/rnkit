@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Text from "./Text";
 export default function Input({
+  initialValue,
   title,
   placeholder,
   onChangeText,
@@ -17,7 +18,7 @@ export default function Input({
   required,
 }: InputProps) {
   const { spacing, colors, radius, fontSize } = useStyles();
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(initialValue);
   const debounced = useDebounce(value, debounce);
   const validDebounce = typeof debounce === "number" && debounce > 0;
   const prevValue = useRef<string>("");
@@ -28,6 +29,10 @@ export default function Input({
 
     prevValue.current = debounced;
   }, [debounced]);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   const onChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     const text = e.nativeEvent.text;
