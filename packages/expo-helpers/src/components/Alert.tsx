@@ -80,6 +80,9 @@ class AlertManager {
       buttons,
     });
   }
+  public hide() {
+    return this.ref.hide();
+  }
 }
 
 export default function AlertProvider({}: AlertProps) {
@@ -150,7 +153,7 @@ export default function AlertProvider({}: AlertProps) {
         color="white"
       />
     );
-  }, [modal.type, modal.role]);
+  }, [modal.type, fontSize, modal.role]);
 
   return (
     <BottomSheet
@@ -215,7 +218,7 @@ export default function AlertProvider({}: AlertProps) {
                   padding: spacing.get("m"),
                 }}
               >
-                <Text>{button.title}</Text>
+                <Text color={button.color || colors.text}>{button.title}</Text>
               </TouchableOpacity>
             );
           })}
