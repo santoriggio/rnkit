@@ -1,5 +1,15 @@
-import { ViewStyle } from "react-native";
+import { TextStyle, ViewStyle } from "react-native";
 import { TouchableOpacityProps } from "react-native-gesture-handler";
+import {
+  Ionicons,
+  MaterialIcons,
+  FontAwesome,
+  AntDesign,
+  Feather,
+  Foundation,
+  Entypo,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 export const sizes = {
   xs: null,
@@ -47,10 +57,33 @@ export type Theme = {
   border: string;
 } & Partial<Colors>;
 
+export type IconProps = {
+  name: string;
+  family?: keyof typeof iconFamilies;
+  size?: number;
+  color?: string;
+  style?: TextStyle;
+};
+
+export const iconFamilies = {
+  FontAwesome,
+  Ionicons,
+  Feather,
+  Foundation,
+  Entypo,
+  AntDesign,
+  MaterialIcons,
+  MaterialCommunityIcons,
+};
+
+export type ComplexIconProps = {
+  position?: "left" | "right";
+} & IconProps;
+
 export type ButtonProps = {
   title?: string;
   onPress: () => void;
-  icon?: string;
+  icon?: string | ComplexIconProps;
   role?: Role;
   type?: "plain" | "filled" | "gray" | "tinted";
   active?: boolean;

@@ -87,15 +87,36 @@ export default function() {
         {renderButtons("danger")}
         {renderButtons("warning")}
         {renderButtons("success")}
-        <Box marginBottom="m">
-          <Button
-            title="Loading button"
-            loading
-            onPress={() => {
-              alert("Fetch async call");
-            }}
-          />
-        </Box>
+        <Button
+          title="Loading button"
+          loading
+          marginTop="m"
+          onPress={() => {
+            alert("Fetch async call");
+          }}
+        />
+        <Button
+          title="Button with R icon"
+          marginTop="m"
+          onPress={() => {
+            alert("Fetch async call");
+          }}
+          icon={{
+            name: "chevron-left",
+            position: "left",
+          }}
+        />
+        <Button
+          title="Button with L icon"
+          marginTop="m"
+          onPress={() => {
+            alert("Fetch async call");
+          }}
+          icon={{
+            name: "chevron-right",
+            position: "right",
+          }}
+        />
       </ScrollView>
     </>
   );

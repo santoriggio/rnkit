@@ -3,8 +3,10 @@ import useStyles from "../hooks/useStyles";
 import Box from "./Box";
 import { useMemo } from "react";
 import Text from "./Text";
+import Icon from "./Icon";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
 import { ButtonProps } from "../types";
+import isComplexIcon from "../utils/isComplexIcon";
 
 export default function Button({
   title,
@@ -12,6 +14,7 @@ export default function Button({
   type = "filled",
   active = true,
   loading,
+  icon,
   onPress,
   ...props
 }: ButtonProps) {
@@ -64,9 +67,15 @@ export default function Button({
       activeOpacity={0.5}
     >
       {type !== "plain" && <Box backgroundColor={tint} style={styles.bg} />}
+      {isComplexIcon(icon) && icon.position === "left" && (
+        <Icon color={textColor} {...icon} />
+      )}
       <Text bold size="l" color={textColor}>
         {title}
       </Text>
+      {isComplexIcon(icon) && icon.position === "right" && (
+        <Icon color={textColor} {...icon} />
+      )}
       {loading && (
         <ActivityIndicator
           size="small"
