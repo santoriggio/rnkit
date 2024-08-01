@@ -1,6 +1,6 @@
 {
   "name": "expo-helpers",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Expo helpers",
   "main": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -141,9 +141,5 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
-  }
+  ]
 }
