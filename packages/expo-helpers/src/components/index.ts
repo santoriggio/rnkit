@@ -5,4 +5,18 @@ import Checkbox from "./Checkbox";
 import Input from "./Input";
 import Picker from "./Picker";
 import Text from "./Text";
-export { Box, Button, Input, Text, Picker, Checkbox, Alert, AlertProvider };
+import Icon from "./Icon";
+import TextInput from "./TextInput";
+
+export {
+  Box,
+  Button,
+  Input,
+  Text,
+  Picker,
+  Checkbox,
+  Alert,
+  AlertProvider,
+  Icon,
+  TextInput,
+};

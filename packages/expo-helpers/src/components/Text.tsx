@@ -1,13 +1,8 @@
-import {
-  Text as RNText,
-  TextProps as RNTextProps,
-  StyleSheet,
-} from "react-native";
+import { Text as RNText, StyleSheet } from "react-native";
 import { PropsWithChildren, useMemo } from "react";
 import useStyles from "../hooks/useStyles";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
-import { Size, SpacingProps } from "../types";
-
+import { TextProps } from "../types";
 
 export default function Text(props: PropsWithChildren<TextProps>) {
   const { color, size = "m", bold } = props;

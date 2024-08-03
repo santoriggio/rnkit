@@ -6,8 +6,7 @@ import Text from "./Text";
 import Icon from "./Icon";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
 import { ButtonProps } from "../types";
-import isComplexIcon from "../utils/isComplexIcon";
-import triggerAction from "../utils/triggerAction";
+import { isComplexIcon, triggerAction } from "../utils";
 
 export default function Button({
   title,

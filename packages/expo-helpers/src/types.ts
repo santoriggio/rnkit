@@ -1,5 +1,9 @@
-import { TextStyle, ViewStyle, TextProps as RNTextProps } from "react-native";
-import { TouchableOpacityProps } from "react-native-gesture-handler";
+import {
+  TextStyle,
+  ViewStyle,
+  TouchableOpacityProps,
+  TextProps as RNTextProps,
+} from "react-native";
 import {
   Ionicons,
   FontAwesome,
@@ -157,7 +161,7 @@ export type TextProps = {
   RNTextProps;
 
 export type AlertMenuButton = {
-  icon?: string;
+  icon?: string | Omit<ComplexIconProps, "position">;
   title: string;
   subtitle?: string;
   titleProps?: TextProps;

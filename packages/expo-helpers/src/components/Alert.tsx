@@ -4,8 +4,8 @@ import {
   AlertMethods,
   AlertButton,
   AlertShowParams,
-  AlertManager,
   AlertMenuButton,
+  AlertManager,
   TOAST_DURATION,
 } from "../types";
 import BottomSheet, {
@@ -14,8 +14,6 @@ import BottomSheet, {
   BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
 import { FullWindowOverlay } from "react-native-screens";
-
-import Text from "./Text";
 import {
   View,
   Platform,
@@ -26,6 +24,9 @@ import {
 import { useStyles } from "../hooks";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import isComplexIcon from "../utils/isComplexIcon";
+import Icon from "./Icon";
+import Text from "./Text";
 import Button from "./Button";
 
 export default function AlertProvider({
@@ -82,7 +83,7 @@ export default function AlertProvider({
     ),
     []
   );
-  const renderIcon = useCallback(() => {
+  const renderToastIcon = useCallback(() => {
     if (modal.type !== "toast") return null;
 
     const icons = {
@@ -134,9 +135,9 @@ export default function AlertProvider({
               alignItems: "center",
             }}
           >
-            {renderIcon()}
+            {renderToastIcon()}
             <View style={{ marginLeft: spacing.get("m") }}>
-              <Text bold size="l" numberOfLines={1} color="white">
+              <Text bold size="xl" numberOfLines={1} color="white">
                 {modal.title}
               </Text>
               <Text color="white" numberOfLines={2}>
@@ -152,11 +153,29 @@ export default function AlertProvider({
             paddingBottom: spacing.get("2xl"),
           }}
         >
-          <Text bold size="l" numberOfLines={1} marginLeft="m" marginBottom="m">
+          <Text
+            bold
+            size="xl"
+            numberOfLines={1}
+            marginLeft="l"
+            marginTop="m"
+            marginBottom="m"
+          >
             {modal.title}
           </Text>
-          {modal.buttons.map((button: AlertMenuButton, _) => {
+          {modal.buttons.map((button: AlertMenuButton, _: number) => {
             const { hideOnPress = true } = button;
+            const renderIcon = () => {
+              if (typeof button.icon === "string") {
+                return <Icon marginRight="m" name={button.icon} />;
+              }
+
+              if (isComplexIcon(button.icon)) {
+                return <Icon marginRight="m" {...button.icon} />;
+              }
+
+              return null;
+            };
             return (
               <TouchableOpacity
                 key={_}
@@ -168,8 +187,12 @@ export default function AlertProvider({
                 activeOpacity={0.8}
                 style={{
                   padding: spacing.get("m"),
+                  paddingHorizontal: spacing.get("l"),
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
+                {button.icon && renderIcon()}
                 <Text {...button.titleProps}>{button.title}</Text>
               </TouchableOpacity>
             );
@@ -178,16 +201,26 @@ export default function AlertProvider({
       )}
       {modal.type === "alert" && (
         <BottomSheetView style={{ paddingBottom: spacing.get("2xl") }}>
-          <Text
-            bold
-            size="l"
-            numberOfLines={1}
-            marginTop="s"
-            style={{ textAlign: "center" }}
-          >
-            {modal.title}
-          </Text>
-          <Text style={{ textAlign: "center" }}>{modal.message}</Text>
+          <View style={{ paddingHorizontal: spacing.get("m") }}>
+            <Text
+              bold
+              size="xl"
+              numberOfLines={1}
+              marginTop="m"
+              style={{ textAlign: "center" }}
+            >
+              {modal.title}
+            </Text>
+            <Text
+              marginTop="s"
+              style={{
+                textAlign: "center",
+                lineHeight: fontSize.get("m") * 1.3,
+              }}
+            >
+              {modal.message}
+            </Text>
+          </View>
           <View
             style={{
               flexDirection: "row",
@@ -196,10 +229,16 @@ export default function AlertProvider({
             }}
           >
             {modal.buttons.map((button: AlertButton, _: number) => {
-              const { hideOnPress = true } = button;
+              const {
+                hideOnPress = true,
+                type = "plain",
+                role = "info",
+              } = button;
               return (
                 <Button
                   key={_}
+                  role={role}
+                  type={type}
                   {...button}
                   style={{ flex: 1, margin: spacing.get("m") / 2 }}
                   onPress={() => {
