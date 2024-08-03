@@ -8,12 +8,6 @@ import useStyles from "../hooks/useStyles";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
 import { Size, SpacingProps } from "../types";
 
-type TextProps = {
-  color?: string;
-  size?: Size | (string & {});
-  bold?: boolean;
-} & SpacingProps &
-  RNTextProps;
 
 export default function Text(props: PropsWithChildren<TextProps>) {
   const { color, size = "m", bold } = props;

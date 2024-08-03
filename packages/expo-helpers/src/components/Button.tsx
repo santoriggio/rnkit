@@ -7,6 +7,7 @@ import Icon from "./Icon";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
 import { ButtonProps } from "../types";
 import isComplexIcon from "../utils/isComplexIcon";
+import triggerAction from "../utils/triggerAction";
 
 export default function Button({
   title,
@@ -16,6 +17,8 @@ export default function Button({
   loading,
   icon,
   onPress,
+  onLongPress,
+  delayLongPress,
   ...props
 }: ButtonProps) {
   const { radius, colors, spacing } = useStyles();
@@ -25,10 +28,14 @@ export default function Button({
   const handlePress = () => {
     if (loading || active === false) return;
 
-    if (typeof onPress === "function") {
-      return onPress();
-    }
+    triggerAction(onPress);
   };
+  const handleLongPress = () => {
+    if (loading || active === false) return;
+
+    triggerAction(onLongPress);
+  };
+
   const textColor = useMemo(() => {
     if (typeof props.textColor !== "undefined") {
       return props.textColor;
@@ -63,8 +70,10 @@ export default function Button({
   return (
     <TouchableOpacity
       onPress={handlePress}
+      onLongPress={handleLongPress}
+      delayLongPress={delayLongPress}
       style={[styles.container, props.style]}
-      activeOpacity={0.5}
+      activeOpacity={0.8}
     >
       {type !== "plain" && <Box backgroundColor={tint} style={styles.bg} />}
       {isComplexIcon(icon) && icon.position === "left" && (

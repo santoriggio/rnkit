@@ -2,16 +2,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertProps,
   AlertMethods,
-  AlertOptions,
-  Role,
-  AlertMenuOptions,
-  ButtonProps,
+  AlertButton,
+  AlertShowParams,
+  AlertManager,
+  AlertMenuButton,
+  TOAST_DURATION,
 } from "../types";
 import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
+import { FullWindowOverlay } from "react-native-screens";
 
 import Text from "./Text";
 import {
@@ -25,67 +27,10 @@ import { useStyles } from "../hooks";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Button from "./Button";
-type ToastOptions = {
-  title: string;
-  message: string;
-  /*
-   * @default primary
-   */
-  role?: Extract<Role, "info" | "danger" | "warning">;
-  /*
-   * Duration in milliseconds
-   * @default 1500
-   */
-  duration?: number;
-  link?: string;
-};
-class AlertManager {
-  private ref: AlertMethods;
-  public register(ref: AlertMethods) {
-    this.ref = ref;
-  }
 
-  public toast({
-    title,
-    message,
-    role = "info",
-    duration = 1500,
-    ...params
-  }: ToastOptions) {
-    this.ref.show({
-      type: "toast",
-      title,
-      message,
-      role,
-      duration,
-      ...params,
-    });
-  }
-  public menu({ title, buttons }: AlertMenuOptions) {
-    return this.ref.show({
-      type: "menu",
-      title,
-      buttons,
-    });
-  }
-  public alert({
-    title,
-    message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
-  }: AlertOptions) {
-    return this.ref.show({
-      type: "alert",
-      title,
-      message,
-      buttons,
-    });
-  }
-  public hide() {
-    return this.ref.hide();
-  }
-}
-
-export default function AlertProvider({}: AlertProps) {
+export default function AlertProvider({
+  toastDuration = TOAST_DURATION,
+}: AlertProps) {
   const { height } = useWindowDimensions();
   const { spacing, colors, fontSize } = useStyles();
   const [modal, setModal] = useState<any>({});
@@ -93,14 +38,14 @@ export default function AlertProvider({}: AlertProps) {
 
   const is_toast = modal.type === "toast";
 
-  const show = (props: any) => {
+  const show = (props: AlertShowParams) => {
     setModal(props);
     bottomsheet.current.expand();
 
     if (props.type === "toast") {
       setTimeout(() => {
         hide();
-      }, props.duration);
+      }, props.duration || toastDuration);
     }
   };
 
@@ -162,6 +107,8 @@ export default function AlertProvider({}: AlertProps) {
       enablePanDownToClose
       maxDynamicContentSize={height * 0.7}
       backdropComponent={is_toast ? undefined : renderBackdrop}
+      // @ts-ignore
+      containerComponent={Platform.OS === "ios" ? FullWindowOverlay : undefined}
       enableOverDrag={Platform.select({
         ios: true,
         android: is_toast,
@@ -208,17 +155,22 @@ export default function AlertProvider({}: AlertProps) {
           <Text bold size="l" numberOfLines={1} marginLeft="m" marginBottom="m">
             {modal.title}
           </Text>
-          {modal.buttons.map((button, _) => {
+          {modal.buttons.map((button: AlertMenuButton, _) => {
+            const { hideOnPress = true } = button;
             return (
               <TouchableOpacity
                 key={_}
-                onPress={button.onPress}
+                onPress={() => {
+                  if (hideOnPress) {
+                    hide();
+                  }
+                }}
                 activeOpacity={0.8}
                 style={{
                   padding: spacing.get("m"),
                 }}
               >
-                <Text color={button.color || colors.text}>{button.title}</Text>
+                <Text {...button.titleProps}>{button.title}</Text>
               </TouchableOpacity>
             );
           })}
@@ -243,7 +195,8 @@ export default function AlertProvider({}: AlertProps) {
               padding: spacing.get("m") / 2,
             }}
           >
-            {modal.buttons.map((button: ButtonProps, _: number) => {
+            {modal.buttons.map((button: AlertButton, _: number) => {
+              const { hideOnPress = true } = button;
               return (
                 <Button
                   key={_}
@@ -253,7 +206,9 @@ export default function AlertProvider({}: AlertProps) {
                     if (typeof button.onPress === "function") {
                       button.onPress();
                     }
-                    hide();
+                    if (hideOnPress) {
+                      hide();
+                    }
                   }}
                 />
               );
