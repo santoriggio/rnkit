@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { Button, Alert, useStyles, Text } from "expo-helpers";
 import { useState } from "react";
-export default function() {
+export default function () {
   const { spacing } = useStyles();
   return (
     <>
@@ -18,6 +18,19 @@ export default function() {
           onPress={() => {
             Alert.toast({
               title: "Title",
+              message: "Message",
+              link: "expo-bare-app://picker",
+            });
+          }}
+        />
+        <Button
+          title="Success toast"
+          marginBottom="m"
+          role="success"
+          onPress={() => {
+            Alert.toast({
+              title: "Title",
+              role: "success",
               message: "Message",
               link: "expo-bare-app://picker",
             });
@@ -45,12 +58,12 @@ export default function() {
                 {
                   title: "Cancel",
                   role: "info",
-                  onPress: () => { },
+                  onPress: () => {},
                 },
                 {
                   title: "Delete",
                   role: "danger",
-                  onPress: () => { },
+                  onPress: () => {},
                 },
               ],
             });

@@ -4,6 +4,7 @@ import { IconProps, SpacingProps, iconFamilies } from "../types";
 import { useStyles } from "../hooks";
 import { StyleSheet } from "react-native";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+import { triggerAction } from "../utils";
 
 export default function Icon({
   name,
@@ -11,6 +12,8 @@ export default function Icon({
   size,
   color,
   style,
+  onPress,
+  onLongPress,
   ...props
 }: IconProps & SpacingProps) {
   const { fontSize, colors } = useStyles();
@@ -36,6 +39,8 @@ export default function Icon({
       }
     }
   }
+  const handlePress = () => triggerAction(onPress);
+  const handleLongPress = () => triggerAction(onLongPress);
 
   const customStyle = useMemo(() => {
     return StyleSheet.create({
@@ -52,6 +57,9 @@ export default function Icon({
       size={size || fontSize.get("xl")}
       color={color || colors.text}
       style={customStyle.icon}
+      onPress={handlePress}
+      onLongPress={handleLongPress}
+      suppressHighlighting
     />
   );
 }

@@ -31,6 +31,7 @@ import Button from "./Button";
 
 export default function AlertProvider({
   toastDuration = TOAST_DURATION,
+  delay,
 }: AlertProps) {
   const { height } = useWindowDimensions();
   const { spacing, colors, fontSize } = useStyles();
@@ -41,7 +42,15 @@ export default function AlertProvider({
 
   const show = (props: AlertShowParams) => {
     setModal(props);
-    bottomsheet.current.expand();
+
+    if (props.delay || delay) {
+      // If delay is used the bottomsheet should expand after that delay
+      setTimeout(() => {
+        bottomsheet.current.expand();
+      }, props.delay || delay);
+    } else {
+      bottomsheet.current.expand();
+    }
 
     if (props.type === "toast") {
       setTimeout(() => {
@@ -90,6 +99,7 @@ export default function AlertProvider({
       info: "information-circle-outline",
       warning: "warning-outline",
       danger: "close-circle",
+      success: "checkmark-circle-outline",
     };
 
     return (

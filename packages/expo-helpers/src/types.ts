@@ -3,6 +3,7 @@ import {
   ViewStyle,
   TouchableOpacityProps,
   TextProps as RNTextProps,
+  KeyboardType,
 } from "react-native";
 import {
   Ionicons,
@@ -74,23 +75,26 @@ export class AlertManager {
       ...params,
     });
   }
-  public menu({ title, buttons }: AlertMenuOptions) {
+  public menu({ title, buttons, ...params }: AlertMenuOptions) {
     return this.ref.show({
       type: "menu",
       title,
       buttons,
+      ...params,
     });
   }
   public alert({
     title,
     message,
     buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
+    ...params
   }: AlertOptions) {
     return this.ref.show({
       type: "alert",
       title,
       message,
       buttons,
+      ...params,
     });
   }
 
@@ -118,6 +122,8 @@ export type IconProps = {
   size?: number;
   color?: string;
   style?: TextStyle;
+  onPress?: Press;
+  onLongPress?: Press;
 };
 
 export const iconFamilies = {
@@ -173,6 +179,7 @@ export type AlertMenuButton = {
 };
 export type AlertMenuOptions = {
   title: string;
+  delay?: number;
   buttons: AlertMenuButton[];
 };
 export type AlertToastOptions = {
@@ -181,13 +188,14 @@ export type AlertToastOptions = {
   /*
    * @default primary
    */
-  role?: Extract<Role, "info" | "danger" | "warning">;
+  role?: Extract<Role, "info" | "danger" | "warning" | "success">;
   /*
    * Duration in milliseconds
    * @default 1500
    */
   duration?: number;
   link?: string;
+  delay?: number;
 };
 
 export type AlertButton = ButtonProps & Pick<AlertMenuButton, "hideOnPress">;
@@ -196,12 +204,14 @@ type AlertWithType<C, Type extends string> = C & { type: Type };
 
 export type AlertOptions = {
   title: string;
+  delay?: number;
   message: string;
   buttons?: AlertButton[];
 };
 
 export type AlertProps = {
   toastDuration?: number;
+  delay?: number;
 };
 export type AlertShowParams =
   | AlertWithType<AlertToastOptions, "toast">
@@ -232,7 +242,11 @@ export type InputProps = {
   required?: boolean;
   onChangeText: (text: string) => void;
   debounce?: number;
-};
+  icon?: string | ComplexIconProps;
+  style?: ViewStyle;
+  type?: "text" | "number" | "email" | "password" | "phone";
+  keyboardType?: KeyboardType;
+} & SpacingProps;
 
 export type BoxProps = {
   backgroundColor?: string;

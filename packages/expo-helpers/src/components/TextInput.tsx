@@ -14,7 +14,7 @@ type TextInputProps = {
 } & SpacingProps;
 
 export default function TextInput(props: TextInputProps & RNTextInputProps) {
-  const { color, size } = props;
+  const { color, size = "m" } = props;
   const { colors, fontSize } = useStyles();
   const spacingProps = useRawSpacingProps(props);
   const styles = useMemo(() => {

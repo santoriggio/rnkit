@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { ScrollView } from "react-native";
 import { Input, useStyles } from "expo-helpers";
 import { useState } from "react";
-export default function() {
+export default function () {
   const { spacing } = useStyles();
   const [inputValue, setInputValue] = useState<string>("ciao");
   return (
@@ -10,7 +10,10 @@ export default function() {
       <Stack.Screen options={{ title: "Input" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: spacing.get("m") }}
+        contentContainerStyle={{
+          gap: spacing.get("m"),
+          padding: spacing.get("m"),
+        }}
       >
         <Input
           initialValue={inputValue}
@@ -33,6 +36,13 @@ export default function() {
             console.log(text);
           }}
         />
+        <Input title="Input with icon on left" icon="email" />
+        <Input
+          title="Input with icon on right"
+          icon={{ name: "email", position: "right" }}
+        />
+        <Input title="Input with type password" type="password" />
+        <Input title="Input with type email" type="email" />
       </ScrollView>
     </>
   );
