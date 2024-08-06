@@ -7,6 +7,7 @@ import Picker from "./Picker";
 import Text from "./Text";
 import Icon from "./Icon";
 import TextInput from "./TextInput";
+import MenuList from "./MenuList";
 
 export {
   Box,
@@ -19,4 +20,5 @@ export {
   AlertProvider,
   Icon,
   TextInput,
+  MenuList,
 };

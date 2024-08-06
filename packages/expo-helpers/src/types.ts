@@ -1,8 +1,8 @@
 import {
   TextStyle,
   ViewStyle,
-  TouchableOpacityProps,
   TextProps as RNTextProps,
+  TouchableOpacityProps,
   KeyboardType,
 } from "react-native";
 import {
@@ -103,6 +103,12 @@ export class AlertManager {
   }
 
   public show(params: AlertShowParams) {
+    if (params.type === "toast") {
+      return this.ref.show({
+        ...params,
+        type: "toast",
+      });
+    }
     return this.ref.show(params);
   }
 }
@@ -253,3 +259,16 @@ export type BoxProps = {
   horizontal?: boolean;
 } & SpacingProps &
   TouchableOpacityProps;
+
+type MenuItem = {
+  title: string;
+  subtitle?: string;
+  icon?: string;
+  color?: string;
+  onPress?: Press;
+};
+
+export type MenuListProps = {
+  list: MenuItem[];
+  variant?: "ios" | "android";
+};

@@ -47,6 +47,7 @@ const screens: (Screen | Separator)[] = [
     screenName: "input",
     title: "🔤 Input",
   },
+  { screenName: "menulist", title: "MenuList" },
   {
     separator: true,
     title: "Utils",
