@@ -1,20 +1,37 @@
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { MenuListProps } from "../types";
 import Text from "./Text";
 import { useMemo } from "react";
 import { useStyles } from "../hooks";
 import Icon from "./Icon";
 import { triggerAction } from "../utils";
+import { useRawSpacingProps } from "../hooks/useSpacingProps";
 
 export default function ButtonsList({
   list,
-  variant = "android",
+  //@ts-ignore
+  variant = Platform.OS,
+  border,
+  style,
+  ...props
 }: MenuListProps) {
   const { spacing, colors, fontSize, radius } = useStyles();
+  const spacingProps = useRawSpacingProps(props);
   const customStyle = useMemo(() => {
     const ios = StyleSheet.create({
       container: {
+        borderRadius: radius.get("m"),
         backgroundColor: colors.background,
+        borderWidth: border ? 1 : 0,
+        borderColor: colors.border,
+        ...spacingProps,
+        ...style,
       },
       itemContainer: {
         flexDirection: "row",
@@ -33,7 +50,10 @@ export default function ButtonsList({
       },
     });
     const android = StyleSheet.create({
-      container: {},
+      container: {
+        ...spacingProps,
+        ...style,
+      },
       itemContainer: {
         flexDirection: "row",
         alignItems: "center",
@@ -50,10 +70,32 @@ export default function ButtonsList({
     };
 
     return styles[variant];
-  }, [spacing, colors, radius, variant]);
+  }, [spacing, colors, radius, style, border, variant, spacingProps]);
   return (
     <View style={customStyle.container}>
       {list.map((item, _) => {
+        const { loading, component } = item;
+        const renderRight = () => {
+          if (loading) {
+            return <ActivityIndicator size={"small"} color={colors.gray} />;
+          }
+
+          if (component) {
+            return component(item);
+          }
+
+          if (variant === "ios") {
+            return (
+              <Icon
+                name="chevron-right"
+                color={colors.gray}
+                size={fontSize.get("l")}
+              />
+            );
+          }
+
+          return null;
+        };
         const handlePress = () => {
           triggerAction(item.onPress);
         };
@@ -62,6 +104,7 @@ export default function ButtonsList({
             key={_}
             style={customStyle.itemContainer}
             onPress={handlePress}
+            activeOpacity={0.8}
           >
             <View
               style={[
@@ -75,8 +118,32 @@ export default function ButtonsList({
                 color={variant === "ios" ? "white" : undefined}
               />
             </View>
-            <Text size={variant === "android" && "l"}>{item.title}</Text>
-            {item.subtitle && <Text color={colors.gray}>{item.subtitle}</Text>}
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text size={variant === "android" && "l"}>{item.title}</Text>
+                {item.subtitle && (
+                  <Text color={colors.gray}>{item.subtitle}</Text>
+                )}
+              </View>
+              {renderRight()}
+            </View>
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                height: 1,
+                backgroundColor: colors.border,
+                left: spacing.get("5xl"),
+                right: 0,
+              }}
+            />
           </TouchableOpacity>
         );
       })}

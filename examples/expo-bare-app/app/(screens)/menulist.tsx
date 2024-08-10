@@ -1,12 +1,43 @@
 import { Stack } from "expo-router";
 import { ScrollView } from "react-native";
-import { MenuList } from "expo-helpers";
+import { MenuList, Text } from "expo-helpers";
 export default function MenuListPage() {
   return (
     <>
       <Stack.Screen options={{ title: "MenuList" }} />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <MenuList
+          border
+          variant="ios"
+          marginHorizontal='m'
+          list={[
+            {
+              title: "Settings",
+              icon: "cog",
+              color: "red",
+              component: (item) => {
+                return <Text>IT</Text>;
+              },
+            },
+            {
+              title: "Notifications",
+              icon: "bell",
+              loading: true,
+              color: "green",
+              onPress: {
+                action: "alert",
+                params: {
+                  type: "toast",
+                  title: "AAA",
+                  message: "BBB",
+                  role: "info",
+                },
+              },
+            },
+          ]}
+        />
+        <MenuList
+          variant="android"
           list={[
             { title: "Settings", icon: "cog", color: "red" },
             {
@@ -15,7 +46,12 @@ export default function MenuListPage() {
               color: "green",
               onPress: {
                 action: "alert",
-                params: { type: "toast", title: "AAA", message: "BBB", role:'info', },
+                params: {
+                  type: "toast",
+                  title: "AAA",
+                  message: "BBB",
+                  role: "info",
+                },
               },
             },
           ]}

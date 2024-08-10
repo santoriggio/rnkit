@@ -30,12 +30,16 @@ export const spacingProps = {
   marginTop: null,
   marginLeft: null,
   marginRight: null,
+  marginHorizontal: null,
+  marginVertical: null,
   //spacing
   padding: null,
   paddingBottom: null,
   paddingTop: null,
   paddingLeft: null,
   paddingRight: null,
+  paddingHorizontal: null,
+  paddingVertical: null,
   //radius
 };
 export type Size = keyof typeof sizes;
@@ -86,7 +90,7 @@ export class AlertManager {
   public alert({
     title,
     message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
+    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
     ...params
   }: AlertOptions) {
     return this.ref.show({
@@ -266,9 +270,16 @@ type MenuItem = {
   icon?: string;
   color?: string;
   onPress?: Press;
+  loading?: boolean;
+  component?: (item: MenuItem) => JSX.Element;
 };
 
 export type MenuListProps = {
   list: MenuItem[];
   variant?: "ios" | "android";
-};
+  style?: ViewStyle;
+  /**
+   * @ios only
+   */
+  border?: boolean;
+} & SpacingProps;
