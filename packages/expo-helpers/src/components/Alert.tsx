@@ -28,6 +28,7 @@ import isComplexIcon from "../utils/isComplexIcon";
 import Icon from "./Icon";
 import Text from "./Text";
 import Button from "./Button";
+import { triggerAction } from "../utils";
 
 export default function AlertProvider({
   toastDuration = TOAST_DURATION,
@@ -193,6 +194,7 @@ export default function AlertProvider({
                   if (hideOnPress) {
                     hide();
                   }
+                  triggerAction(button.onPress);
                 }}
                 activeOpacity={0.8}
                 style={{
