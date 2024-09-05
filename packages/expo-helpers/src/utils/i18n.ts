@@ -69,6 +69,7 @@ class I18n {
     if (typeof key !== "string") return "";
 
     const formattedString = this.findFormattedString(key, options);
+
     if (formattedString === null) {
       return key;
     }
@@ -83,12 +84,16 @@ class I18n {
   }
 
   private sub(str: string, options: Options = {}) {
-    return str.replace(/%\{(\w+)\}/g, (match, key: keyof Options) => {
-      if (key in options) {
-        return options[key];
-      }
-      return match;
-    });
+    if (typeof str === "string") {
+      return str.replace(/%\{(\w+)\}/g, (match, key: keyof Options) => {
+        if (key in options) {
+          return options[key];
+        }
+        return match;
+      });
+    }
+
+    return JSON.stringify(str);
   }
 
   private findFormattedString(
@@ -105,11 +110,10 @@ class I18n {
         .split(".")
         .filter((str) => typeof str === "string" && str.length > 0);
 
-      if (
-        typeof splitted[0] !== "undefined" &&
-        this._translation[splitted[0]]
-      ) {
+      if (splitted[0] && this._translation[splitted[0]]) {
         formattedString = this._translation[splitted[0]];
+      } else {
+        return null;
       }
 
       for (let i = 1; i < splitted.length; i++) {
@@ -119,13 +123,8 @@ class I18n {
           typeof formattedString === "object" &&
           !Array.isArray(formattedString)
         ) {
-          //Se è oggetto e NON è un array
           const splittedKey = splitted[i];
-
-          if (
-            typeof splittedKey !== "undefined" &&
-            formattedString[splittedKey]
-          ) {
+          if (splittedKey && formattedString[splittedKey]) {
             formattedString = formattedString[splittedKey];
           }
         }
@@ -151,24 +150,26 @@ class I18n {
       formattedString = this._translation[key];
 
       if (typeof formattedString === "object") {
-        if (typeof options.count === "number") {
-          if (
-            options.count === 0 &&
-            typeof formattedString.zero !== "undefined"
-          ) {
-            return formattedString.zero;
+        for (const option_key of Object.keys(options)) {
+          const option = options[option_key];
+
+          if (option_key === "count" && typeof option === "number") {
+            if (option === 0 && typeof formattedString.zero !== "undefined") {
+              return formattedString.zero;
+            }
+
+            if (option === 1 && typeof formattedString.one !== "undefined") {
+              return formattedString.one;
+            }
+
+            if (typeof formattedString.other !== "undefined") {
+              return formattedString.other;
+            }
           }
 
-          if (
-            options.count === 1 &&
-            typeof formattedString.one !== "undefined"
-          ) {
-            return formattedString.one;
-          }
-
-          if (typeof formattedString.other !== "undefined") {
-            return formattedString.other;
-          }
+          // if (typeof formattedString[option_key] !== "undefined") {
+          //   return formattedString[option_key];
+          // }
         }
       }
     }
@@ -177,9 +178,4 @@ class I18n {
   }
 }
 const i18n = new I18n({});
-/* const i18n = new I18n({
-      en: require("./languages/en.json"),
-      it: require("./languages/it.json"),
-    }); */
-
 export default i18n;

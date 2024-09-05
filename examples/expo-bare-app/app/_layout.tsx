@@ -1,11 +1,13 @@
 import { Stack, router } from "expo-router";
 import {
-  ThemeProvider,
   useStyles,
+  ThemeProvider,
   i18n,
   config,
   AlertProvider,
+  ReloadProvider,
 } from "expo-helpers";
+import { View, Text } from "react-native";
 import { StatusBar, setStatusBarStyle } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -75,7 +77,7 @@ config.init({
 });
 
 i18n.init({
-  locale: "it",
+  locale: "en",
   translations: {
     en: require("../src/translations/en.json"),
     it: require("../src/translations/it.json"),
@@ -116,14 +118,30 @@ function App() {
   );
 }
 
-export default function() {
+export default function () {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <StatusBar />
-        <App />
-        <AlertProvider />
-      </ThemeProvider>
+      <ReloadProvider
+        content={() => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>Loading</Text>
+            </View>
+          );
+        }}
+      >
+        <ThemeProvider>
+          <StatusBar />
+          <App />
+          <AlertProvider />
+        </ThemeProvider>
+      </ReloadProvider>
     </GestureHandlerRootView>
   );
 }

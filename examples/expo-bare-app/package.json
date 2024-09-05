@@ -9,7 +9,7 @@
     "ios": "npx expo run:ios",
     "web": "expo start --web",
     "build": "npx expo prebuild",
-    "clean": "rm -rf ios android node_modules",
+    "clean": "rm -rf ios android",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "pod": "cd ios && pod install && cd ..",
     "expo-helpers-init": "yarn expo-helpers"

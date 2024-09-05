@@ -64,6 +64,10 @@ const screens: (Screen | Separator)[] = [
     screenName: "formatdate",
     title: "🗓️ FormatDate",
   },
+  {
+    screenName: "reload",
+    title: "Reload",
+  },
 ];
 
 function isSeparator(component: any): component is Separator {

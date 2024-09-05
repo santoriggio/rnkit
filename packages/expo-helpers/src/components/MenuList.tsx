@@ -74,14 +74,14 @@ export default function ButtonsList({
   return (
     <View style={customStyle.container}>
       {list.map((item, _) => {
-        const { loading, component } = item;
+        const { loading, right } = item;
         const renderRight = () => {
           if (loading) {
             return <ActivityIndicator size={"small"} color={colors.gray} />;
           }
 
-          if (component) {
-            return component(item);
+          if (right) {
+            return right(item);
           }
 
           if (variant === "ios") {

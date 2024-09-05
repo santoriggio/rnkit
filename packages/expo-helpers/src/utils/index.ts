@@ -5,6 +5,7 @@ import isComplexIcon from "./isComplexIcon";
 import Store, { storage } from "./store";
 import ThemeProvider, { useTheme } from "./themeProvider";
 import triggerAction from "./triggerAction";
+import ReloadProvider, { useReload } from "./reloadProvider";
 export {
   formatDate,
   isComplexIcon,
@@ -15,4 +16,6 @@ export {
   ThemeProvider,
   useTheme,
   config,
+  ReloadProvider,
+  useReload,
 };

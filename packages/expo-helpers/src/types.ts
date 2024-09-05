@@ -15,6 +15,7 @@ import {
   Entypo,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { PropsWithChildren } from "react";
 
 export const sizes = {
   xs: null,
@@ -90,7 +91,7 @@ export class AlertManager {
   public alert({
     title,
     message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
+    buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
     ...params
   }: AlertOptions) {
     return this.ref.show({
@@ -271,7 +272,7 @@ type MenuItem = {
   color?: string;
   onPress?: Press;
   loading?: boolean;
-  component?: (item: MenuItem) => JSX.Element;
+  right?: (item: MenuItem) => JSX.Element;
 };
 
 export type MenuListProps = {
@@ -283,3 +284,8 @@ export type MenuListProps = {
    */
   border?: boolean;
 } & SpacingProps;
+
+type ReloadProviderRawProps = {
+  content: () => JSX.Element;
+};
+export type ReloadProviderProps = PropsWithChildren<ReloadProviderRawProps>;

@@ -15,7 +15,7 @@ export default function MenuListPage() {
               title: "Settings",
               icon: "cog",
               color: "red",
-              component: (item) => {
+              right: (item) => {
                 return <Text>IT</Text>;
               },
             },

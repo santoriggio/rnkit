@@ -1,3 +1,15 @@
 {
-  "greetings": "Hello world!"
+  "greetings": "Hello world!",
+  "nested": {
+    "key": "Nested Key"
+  },
+  "greetings_name": "Wewe %{name}",
+  "greetings_nested_name": {
+    "formal": "Hi %{name}",
+    "friends": "Weweeeeee %{name}"
+  },
+  "numbers": {
+    "one": "One",
+    "other": "Numbers"
+  }
 }
