@@ -1,6 +1,6 @@
 {
   "name": "expo-helpers",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Expo helpers",
   "main": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
