@@ -23,12 +23,12 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
       <Text bold marginBottom="m">
         {role}
       </Text>
-      <Box horizontal style={{ justifyContent: 'space-around' }}>
+      <Box horizontal style={{ justifyContent: "space-around" }}>
         <Button
           role={role}
           type="plain"
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
@@ -44,14 +44,14 @@ const renderButtons = (role: ButtonProps["role"] = "primary") => {
           role={role}
           type="tinted"
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
         <Button
           role={role}
           title={getIcon(role)}
-          onPress={() => {}}
+          onPress={() => { }}
           margin="m"
           style={{ flex: 1 }}
         />
@@ -102,8 +102,8 @@ export default function() {
             alert("Fetch async call");
           }}
           icon={{
-            name: "chevron-left",
-            position: "left",
+            name: "chevron-right",
+            position: "right",
           }}
         />
         <Button
@@ -113,8 +113,8 @@ export default function() {
             alert("Fetch async call");
           }}
           icon={{
-            name: "chevron-right",
-            position: "right",
+            name: "chevron-left",
+            position: "left",
           }}
         />
       </ScrollView>

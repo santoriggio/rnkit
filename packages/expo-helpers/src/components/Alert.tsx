@@ -8,10 +8,11 @@ import {
   AlertManager,
   TOAST_DURATION,
 } from "../types";
-import BottomSheet, {
+import {
   BottomSheetView,
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
+  BottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import { FullWindowOverlay } from "react-native-screens";
 import {
@@ -36,21 +37,31 @@ export default function AlertProvider({
 }: AlertProps) {
   const { height } = useWindowDimensions();
   const { spacing, colors, fontSize } = useStyles();
+  const stack = useRef<any[]>([]);
+  const isOpen = useRef<boolean>(false);
   const [modal, setModal] = useState<any>({});
-  const bottomsheet = useRef<BottomSheet>(null);
+  const bottomsheet = useRef<BottomSheetModal>(null);
 
   const is_toast = modal.type === "toast";
 
   const show = (props: AlertShowParams) => {
+    if (!props) return;
+
+    if (isOpen.current) {
+      stack.current = [props, ...stack.current];
+      return;
+    }
+
     setModal(props);
+    isOpen.current = true;
 
     if (props.delay || delay) {
       // If delay is used the bottomsheet should expand after that delay
       setTimeout(() => {
-        bottomsheet.current.expand();
+        bottomsheet.current.present();
       }, props.delay || delay);
     } else {
-      bottomsheet.current.expand();
+      bottomsheet.current.present();
     }
 
     if (props.type === "toast") {
@@ -61,7 +72,16 @@ export default function AlertProvider({
   };
 
   const hide = () => {
-    bottomsheet.current.close();
+    const HIDE_DURARION = 500;
+    bottomsheet.current.dismiss({ duration: HIDE_DURARION });
+    isOpen.current = false;
+
+    if (stack.current.length > 0) {
+      setTimeout(() => {
+        const last = stack.current.pop();
+        show(last);
+      }, HIDE_DURARION + 100);
+    }
   };
 
   const ref = useRef<AlertMethods>({
@@ -113,14 +133,14 @@ export default function AlertProvider({
   }, [modal.type, fontSize, modal.role]);
 
   return (
-    <BottomSheet
+    <BottomSheetModal
       ref={bottomsheet}
       enableDynamicSizing
       enablePanDownToClose
       maxDynamicContentSize={height * 0.7}
       backdropComponent={is_toast ? undefined : renderBackdrop}
       // @ts-ignore
-      containerComponent={Platform.OS === "ios" ? FullWindowOverlay : undefined}
+      containerComponent={FullWindowOverlay}
       enableOverDrag={Platform.select({
         ios: true,
         android: is_toast,
@@ -130,6 +150,7 @@ export default function AlertProvider({
       backgroundStyle={{
         backgroundColor: is_toast ? colors[modal.role] : colors.background,
       }}
+      onDismiss={hide}
       style={{
         marginHorizontal: is_toast ? spacing.get("m") : 0,
       }}
@@ -267,7 +288,7 @@ export default function AlertProvider({
           </View>
         </BottomSheetView>
       )}
-    </BottomSheet>
+    </BottomSheetModal>
   );
 }
 

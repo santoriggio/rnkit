@@ -38,6 +38,8 @@ export default function MenuListPage() {
         />
         <MenuList
           variant="android"
+          marginTop="m"
+          marginHorizontal="s"
           list={[
             { title: "Settings", icon: "cog", color: "red" },
             {

@@ -1,8 +1,8 @@
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { Button, Alert, useStyles, Text } from "expo-helpers";
 import { useState } from "react";
-export default function () {
+export default function() {
   const { spacing } = useStyles();
   return (
     <>
@@ -28,23 +28,35 @@ export default function () {
           marginBottom="m"
           role="success"
           onPress={() => {
-            Alert.toast({
-              title: "Title",
-              role: "success",
-              message: "Message",
-              link: "expo-bare-app://picker",
-            });
+            const show = (count: number) => {
+              Alert.toast({
+                title: "Title " + count,
+                role: "success",
+                message: "Message",
+                link: "expo-bare-app://picker",
+              });
+            };
+
+            for (let i = 0; i < 3; i++) {
+              show(i);
+            }
           }}
         />
         <Button
           title="Alert"
           marginBottom="m"
           onPress={() => {
-            Alert.alert({
-              title: "Alert",
-              message:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vestibulum pharetra enim. Sed nulla purus, tincidunt sed mollis id, ultricies.",
-            });
+            const show = (count: number) => {
+              Alert.alert({
+                title: "Alert " + count,
+                message:
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vestibulum pharetra enim. Sed nulla purus, tincidunt sed mollis id, ultricies.",
+              });
+            };
+
+            for (let i = 0; i < 3; i++) {
+              show(i);
+            }
           }}
         />
         <Button
@@ -58,15 +70,21 @@ export default function () {
                 {
                   title: "Cancel",
                   role: "info",
-                  onPress: () => {},
+                  onPress: () => { },
                 },
                 {
                   title: "Delete",
                   role: "danger",
-                  onPress: () => {},
+                  onPress: () => { },
                 },
               ],
             });
+          }}
+        />
+        <Button
+          title="Modal"
+          onPress={() => {
+            router.push("modal");
           }}
         />
         {MenuSection()}

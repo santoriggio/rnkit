@@ -91,7 +91,7 @@ export class AlertManager {
   public alert({
     title,
     message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
+    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
     ...params
   }: AlertOptions) {
     return this.ref.show({
@@ -135,7 +135,7 @@ export type IconProps = {
   style?: TextStyle;
   onPress?: Press;
   onLongPress?: Press;
-};
+} & SpacingProps;
 
 export const iconFamilies = {
   FontAwesome,

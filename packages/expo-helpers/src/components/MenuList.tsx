@@ -74,6 +74,7 @@ export default function ButtonsList({
   return (
     <View style={customStyle.container}>
       {list.map((item, _) => {
+        const isLast = typeof list[_ + 1] === "undefined";
         const { loading, right } = item;
         const renderRight = () => {
           if (loading) {
@@ -114,7 +115,9 @@ export default function ButtonsList({
             >
               <Icon
                 name={item.icon}
-                size={variant === "ios" ? fontSize.get("l") : undefined}
+                size={
+                  variant === "ios" ? fontSize.get("l") : fontSize.get("2xl")
+                }
                 color={variant === "ios" ? "white" : undefined}
               />
             </View>
@@ -134,16 +137,18 @@ export default function ButtonsList({
               </View>
               {renderRight()}
             </View>
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                height: 1,
-                backgroundColor: colors.border,
-                left: spacing.get("5xl"),
-                right: 0,
-              }}
-            />
+            {isLast === false && variant === "ios" && (
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  height: 1,
+                  backgroundColor: colors.border,
+                  left: spacing.get("5xl"),
+                  right: 0,
+                }}
+              />
+            )}
           </TouchableOpacity>
         );
       })}

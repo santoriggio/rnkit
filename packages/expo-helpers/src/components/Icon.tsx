@@ -1,6 +1,6 @@
 // Icon.tsx
 import React, { useMemo } from "react";
-import { IconProps, SpacingProps, iconFamilies } from "../types";
+import { IconProps, iconFamilies } from "../types";
 import { useStyles } from "../hooks";
 import { StyleSheet } from "react-native";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
@@ -15,7 +15,7 @@ export default function Icon({
   onPress,
   onLongPress,
   ...props
-}: IconProps & SpacingProps) {
+}: IconProps) {
   const { fontSize, colors } = useStyles();
   const spacingProps = useRawSpacingProps(props);
 

@@ -1,4 +1,5 @@
 import config from "./config";
+import { getLocales } from "expo-localization";
 
 type Translation = Record<string, any>;
 type Translations = Record<string, Translation>;
@@ -17,6 +18,8 @@ type Init = {
   locale?: string;
   translations: Translations;
   onChangeLocale?: (locale: string) => void;
+
+  localeType?: "languageCode" | "languageTag";
 };
 
 class I18n {
@@ -29,17 +32,46 @@ class I18n {
 
   constructor(translations: Translations) {
     this.translations = translations;
+    // config.store.remove("locale");
     // const locales = getLocales();
     // console.log("Locales:", locales);
+  }
+
+  private getStoredLocale(localeType: Init["localeType"] = "languageCode") {
+    const stored = config.store.get<string>("locale");
+
+    if (stored) {
+      this.locale = stored;
+      return;
+    }
+
+    const locales = getLocales();
+    const firstLocale = locales[0];
+
+    const value = firstLocale[localeType];
+
+    const translation = this.translations[value];
+
+    if (typeof translation === "undefined") {
+      throw Error("Locale not exists");
+    }
+
+    this._locale = value;
+    this._translation = translation;
   }
 
   public init(init_config: Init) {
     this.translations = init_config.translations;
     this._translation = init_config.translations[this._locale];
-    this._onChangeLocale = init_config.onChangeLocale;
+
+    this.getStoredLocale(init_config.localeType);
+
     if (typeof init_config.locale === "string") {
       this.locale = init_config.locale;
     }
+
+    //Keep last to not trigger first locale changes
+    this._onChangeLocale = init_config.onChangeLocale;
   }
 
   set locale(value: string) {

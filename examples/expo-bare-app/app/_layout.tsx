@@ -7,10 +7,15 @@ import {
   AlertProvider,
   ReloadProvider,
 } from "expo-helpers";
-import { View, Text } from "react-native";
+import { View, Text, LogBox } from "react-native";
 import { StatusBar, setStatusBarStyle } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+LogBox.ignoreLogs([
+  "[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.",
+]);
+
 config.init({
   themes: {
     flame: {
@@ -77,7 +82,6 @@ config.init({
 });
 
 i18n.init({
-  locale: "en",
   translations: {
     en: require("../src/translations/en.json"),
     it: require("../src/translations/it.json"),
@@ -114,11 +118,18 @@ function App() {
           backgroundColor: colors.card,
         },
       }}
-    />
+    >
+      <Stack.Screen
+        name="(screens)/modal"
+        options={{
+          presentation: "modal",
+        }}
+      />
+    </Stack>
   );
 }
 
-export default function () {
+export default function() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ReloadProvider
@@ -136,11 +147,13 @@ export default function () {
           );
         }}
       >
-        <ThemeProvider>
-          <StatusBar />
-          <App />
-          <AlertProvider />
-        </ThemeProvider>
+        <BottomSheetModalProvider>
+          <ThemeProvider>
+            <StatusBar />
+            <App />
+            <AlertProvider />
+          </ThemeProvider>
+        </BottomSheetModalProvider>
       </ReloadProvider>
     </GestureHandlerRootView>
   );

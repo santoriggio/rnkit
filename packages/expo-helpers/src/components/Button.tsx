@@ -76,14 +76,14 @@ export default function Button({
     >
       {type !== "plain" && <Box backgroundColor={tint} style={styles.bg} />}
       {isComplexIcon(icon) && icon.position === "left" && (
-        <Icon color={textColor} {...icon} />
+        <Icon color={textColor} marginRight="s" {...icon} />
       )}
       <Text bold size="l" color={textColor}>
         {title}
       </Text>
       {typeof icon === "string" && <Icon name={icon} color={textColor} />}
       {isComplexIcon(icon) && icon.position === "right" && (
-        <Icon color={textColor} {...icon} />
+        <Icon color={textColor} marginLeft="s" {...icon} />
       )}
       {loading && (
         <ActivityIndicator
