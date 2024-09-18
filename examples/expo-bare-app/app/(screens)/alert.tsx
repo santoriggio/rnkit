@@ -2,7 +2,7 @@ import { Stack, router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { Button, Alert, useStyles, Text } from "expo-helpers";
 import { useState } from "react";
-export default function() {
+export default function () {
   const { spacing } = useStyles();
   return (
     <>
@@ -19,7 +19,10 @@ export default function() {
             Alert.toast({
               title: "Title",
               message: "Message",
-              link: "expo-bare-app://picker",
+              onPress: {
+                action: "link",
+                link: "https://google.it",
+              },
             });
           }}
         />
@@ -70,12 +73,32 @@ export default function() {
                 {
                   title: "Cancel",
                   role: "info",
-                  onPress: () => { },
+                  onPress: () => {},
                 },
                 {
                   title: "Delete",
                   role: "danger",
-                  onPress: () => { },
+                  onPress: () => {},
+                },
+              ],
+            });
+          }}
+        />
+        <Button
+          title="Stacked alerts"
+          marginBottom="m"
+          onPress={() => {
+            Alert.menu({
+              title: "Stacked alerts",
+              buttons: [
+                {
+                  title: "Open alert",
+                  onPress: () => {
+                    Alert.alert({
+                      title: "New alert",
+                      message: "Alert message",
+                    });
+                  },
                 },
               ],
             });

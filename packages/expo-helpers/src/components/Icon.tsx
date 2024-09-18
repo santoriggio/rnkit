@@ -57,8 +57,8 @@ export default function Icon({
       size={size || fontSize.get("xl")}
       color={color || colors.text}
       style={customStyle.icon}
-      onPress={handlePress}
-      onLongPress={handleLongPress}
+      onPress={onPress && handlePress}
+      onLongPress={onLongPress && handleLongPress}
       suppressHighlighting
     />
   );

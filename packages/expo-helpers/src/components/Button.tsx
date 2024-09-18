@@ -81,7 +81,9 @@ export default function Button({
       <Text bold size="l" color={textColor}>
         {title}
       </Text>
-      {typeof icon === "string" && <Icon name={icon} color={textColor} />}
+      {typeof icon === "string" && (
+        <Icon name={icon} color={textColor} marginLeft="s" />
+      )}
       {isComplexIcon(icon) && icon.position === "right" && (
         <Icon color={textColor} marginLeft="s" {...icon} />
       )}

@@ -73,15 +73,18 @@ export default function AlertProvider({
 
   const hide = () => {
     const HIDE_DURARION = 500;
-    bottomsheet.current.dismiss({ duration: HIDE_DURARION });
-    isOpen.current = false;
+    bottomsheet.current.dismiss({
+      duration: HIDE_DURARION,
+    });
 
-    if (stack.current.length > 0) {
-      setTimeout(() => {
+    setTimeout(() => {
+      isOpen.current = false;
+
+      if (stack.current.length > 0) {
         const last = stack.current.pop();
         show(last);
-      }, HIDE_DURARION + 100);
-    }
+      }
+    }, HIDE_DURARION + 100);
   };
 
   const ref = useRef<AlertMethods>({
@@ -92,8 +95,8 @@ export default function AlertProvider({
   const onPressToast = () => {
     if (modal.type !== "toast") return;
 
-    if (modal.link) {
-      Linking.openURL(modal.link);
+    if (modal.onPress) {
+      triggerAction(modal.onPress);
     }
 
     return hide();
@@ -150,7 +153,6 @@ export default function AlertProvider({
       backgroundStyle={{
         backgroundColor: is_toast ? colors[modal.role] : colors.background,
       }}
-      onDismiss={hide}
       style={{
         marginHorizontal: is_toast ? spacing.get("m") : 0,
       }}

@@ -1,114 +1,115 @@
 #!/usr/bin/env node
 
-const { exec } = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const readline = require("readline");
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+import { exec } from 'child_process'
+import fs from 'fs'
+import path from 'path'
+import inquirer from 'inquirer';
+import libJson from '../package.json' assert { type: "json" }
+import chalk from 'chalk';
+import ora from 'ora'
 
 async function askQuestion(query) {
   return new Promise((resolve) => rl.question(query, resolve));
 }
 
-const colors = {
-  reset: "\x1b[0m",
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  blue: "\x1b[34m",
-};
-async function init() {
-  const project = await readProjectPackageJson();
-  const package = await readPackageJson();
+async function test() {
+  try {
+    await getCwdDeps();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    process.exit();
+  }
+}
 
-  let toInstall = [];
-  Object.keys(package.dependencies).forEach(async (dep) => {
-    const version = package.dependencies[dep];
+test();
 
-    if (typeof project.dependencies[dep] === "undefined") {
-      toInstall.push(`${dep}@${version}`);
-      print(`Need to install: ${dep}@${version}`, 'blue')
-    } else {
-      const currentVersion = project.dependencies[dep];
-      if (version === currentVersion) {
-        print(`${dep} is ok`, 'green')
-      } else {
-        print(`Current version of ${dep}: ${currentVersion}, need ${version}`, 'red')
+async function getCwdDeps() {
+  const cwdPath = path.join(process.cwd());
+  const res = await inquirer.prompt([
+    { name: "path", message: "Cwd path", type: "input", default: cwdPath, },
+    {
+      name: "invalid_path",
+      message: "Invalid path",
+      when: (res) => {
+        const packageJsonPath = path.join(res.path, "package.json");
+        return !fs.existsSync(packageJsonPath);
+      },
+    },
+  ]);
+
+  if (res.path) {
+    const projectPath = path.join(res.path, "package.json");
+    const project = await readJson(projectPath);
+    const libDeps = libJson.dependencies
+    let toInstall = [];
+
+    console.log('')
+    Object.keys(libDeps).forEach(async (dep) => {
+      const version = libDeps[dep].replace('~', '').replace('^', '')
+      if (typeof project.dependencies[dep] === "undefined") {
         toInstall.push(`${dep}@${version}`);
+        console.log(chalk.cyan(`\u2139 Need to install: ${dep}@${version}`))
+      } else {
+        const currentVersion = project.dependencies[dep];
+        if (version === currentVersion) {
+          console.log(chalk.green(`\u2714 ${dep}`))
+        } else {
+          console.log(chalk.yellow(`\u2139 Need to update ${dep} from ${currentVersion} to ${version}`))
+          toInstall.push(`${dep}@${version}`);
+        }
+      }
+    });
+    console.log('')
+
+    if (toInstall.length > 0) {
+      const wantInstall = await inquirer.prompt([
+        {
+          name: "wantInstall",
+          message: "Want to update?",
+          type: "confirm",
+          default: "Yes",
+        },
+      ]);
+
+      if (wantInstall.wantInstall === true) {
+        const spinner = ora('Updating...')
+        spinner.start();
+        await installDeps(toInstall);
+        return spinner.stop();
       }
     }
-  });
-
-  if (toInstall.length > 0) {
-    const wantInstall = await askQuestion("Want to install? (Y/n)");
-    if (wantInstall.toLowerCase() === "yes" || wantInstall === "") {
-      await installDeps(toInstall);
-    }
   }
-
-  process.exit();
 }
-
-init();
-
-async function readPackageJson() {
-  const libraryName = "expo-helpers";
-  const libraryPackagePath = path.join(
-    process.cwd(),
-    "node_modules",
-    libraryName,
-    "package.json"
-  );
-
-  return new Promise((resolve, reject) => {
-    fs.readFile(libraryPackagePath, "utf8", (err, json) => {
-      if (err) reject(err);
-
-      resolve(JSON.parse(json));
-    });
-  });
-}
-
-async function readProjectPackageJson() {
-  return new Promise((resolve, reject) => {
-    fs.readFile("./package.json", "utf8", (err, json) => {
-      if (err) reject(err);
-
-      resolve(JSON.parse(json));
-    });
-  });
-}
-
 
 async function readJson(path) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, json) => {
-      if (err) reject(err);
+    fs.readFile(path, "utf8", async (err, json) => {
+      if (err && err.code && err.code === "ENOENT") {
+        console.error(
+          "Non è stato trovato il json, a questo path, puoi fornirlo tu?",
+          path
+        );
+        const newPath = await askQuestion("Puoi fornire un path?");
+        const newRes = await readJson(newPath);
 
-      resolve(JSON.parse(json))
-    })
-  })
+        resolve(newRes);
+      }
+
+      resolve(JSON.parse(json));
+    });
+  });
 }
 
-function print(str, color) {
-  if (color && typeof colors[color] !== 'undefined') {
-    console.log(colors[color])
-  }
-
-  console.log(str);
-  console.log(colors.reset)
-}
 
 async function installDeps(deps) {
-  if (Array.isArray(deps) === false) return;
-
   return new Promise((resolve, reject) => {
-    exec(`npx expo install ${deps.join(' ')}`, (stdout, stderr) => {
+    if (Array.isArray(deps) === false) reject('invalid_deps')
+    exec(`npx expo install ${deps.join(" ")}`, (stdout, stderr) => {
+      console.log(stderr)
       if (stderr) reject(stderr);
 
-      resolve(stdout)
-    })
-  })
+      resolve(stdout);
+    });
+  });
 }

@@ -91,7 +91,7 @@ export class AlertManager {
   public alert({
     title,
     message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
+    buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
     ...params
   }: AlertOptions) {
     return this.ref.show({
@@ -205,7 +205,7 @@ export type AlertToastOptions = {
    * @default 1500
    */
   duration?: number;
-  link?: string;
+  onPress: Press;
   delay?: number;
 };
 
