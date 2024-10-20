@@ -109,13 +109,13 @@ function App() {
         headerShadowVisible: false,
         headerTintColor: colors.primary,
         headerStyle: {
-          backgroundColor: colors.card,
+          backgroundColor: colors.background,
         },
         headerTitleStyle: {
           color: colors.text,
         },
         contentStyle: {
-          backgroundColor: colors.card,
+          backgroundColor: colors.background,
         },
       }}
     >

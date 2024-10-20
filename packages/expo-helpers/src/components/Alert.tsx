@@ -16,15 +16,15 @@ import {
 } from "@gorhom/bottom-sheet";
 import { FullWindowOverlay } from "react-native-screens";
 import {
+  TouchableOpacity,
   View,
   Platform,
   useWindowDimensions,
   Pressable,
-  Linking,
+  Keyboard,
 } from "react-native";
 import { useStyles } from "../hooks";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import isComplexIcon from "../utils/isComplexIcon";
 import Icon from "./Icon";
 import Text from "./Text";
@@ -34,6 +34,7 @@ import { triggerAction } from "../utils";
 export default function AlertProvider({
   toastDuration = TOAST_DURATION,
   delay,
+  hideKeyboardOnOpen = true,
 }: AlertProps) {
   const { height } = useWindowDimensions();
   const { spacing, colors, fontSize } = useStyles();
@@ -52,6 +53,9 @@ export default function AlertProvider({
       return;
     }
 
+    if (hideKeyboardOnOpen && Keyboard.isVisible()) {
+      Keyboard.dismiss();
+    }
     setModal(props);
     isOpen.current = true;
 
@@ -194,6 +198,7 @@ export default function AlertProvider({
             marginLeft="l"
             marginTop="m"
             marginBottom="m"
+            color={colors.text}
           >
             {modal.title}
           </Text>
@@ -201,11 +206,19 @@ export default function AlertProvider({
             const { hideOnPress = true } = button;
             const renderIcon = () => {
               if (typeof button.icon === "string") {
-                return <Icon marginRight="m" name={button.icon} />;
+                return (
+                  <Icon
+                    marginRight="m"
+                    color={colors.text}
+                    name={button.icon}
+                  />
+                );
               }
 
               if (isComplexIcon(button.icon)) {
-                return <Icon marginRight="m" {...button.icon} />;
+                return (
+                  <Icon marginRight="m" color={colors.text} {...button.icon} />
+                );
               }
 
               return null;
@@ -228,7 +241,9 @@ export default function AlertProvider({
                 }}
               >
                 {button.icon && renderIcon()}
-                <Text {...button.titleProps}>{button.title}</Text>
+                <Text color={colors.text} {...button.titleProps}>
+                  {button.title}
+                </Text>
               </TouchableOpacity>
             );
           })}
@@ -242,12 +257,14 @@ export default function AlertProvider({
               size="xl"
               numberOfLines={1}
               marginTop="m"
+              color={colors.text}
               style={{ textAlign: "center" }}
             >
               {modal.title}
             </Text>
             <Text
               marginTop="s"
+              color={colors.text}
               style={{
                 textAlign: "center",
                 lineHeight: fontSize.get("m") * 1.3,

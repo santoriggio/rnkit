@@ -11,6 +11,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Checkbox from "./Checkbox";
 import { SpacingProps } from "../types";
 import { useRawSpacingProps } from "../hooks/useSpacingProps";
+
 type Value = {
   text: string;
   color?: string;
@@ -31,6 +32,7 @@ function isValue(value: any): value is Value {
 
   return isObject && isNotArray && value.text;
 }
+
 export default function Picker(props: PickerProps) {
   const { values = {}, limit = 1, loadingOnEmptyValues = true } = props;
   const { colors, spacing, radius } = useStyles();
@@ -108,7 +110,7 @@ export default function Picker(props: PickerProps) {
         flexDirection: "row",
         alignItems: "center",
         padding: spacing.get("m"),
-        backgroundColor: colors.background,
+        backgroundColor: colors.card,
       },
       headerText: {
         flex: 1,
@@ -126,10 +128,10 @@ export default function Picker(props: PickerProps) {
         padding: spacing.get("m"),
         borderTopWidth: 1,
         borderColor: colors.border,
-        backgroundColor: colors.background,
+        backgroundColor: colors.card,
       },
     });
-  }, [colors.border, colors.background, spacing, radius, spacingProps]);
+  }, [colors.border, colors.card, spacing, radius, spacingProps]);
 
   return (
     <View style={styles.picker}>

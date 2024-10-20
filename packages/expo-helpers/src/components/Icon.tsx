@@ -42,19 +42,33 @@ export default function Icon({
   const handlePress = () => triggerAction(onPress);
   const handleLongPress = () => triggerAction(onLongPress);
 
+  const iconSize = useMemo(() => {
+    if (typeof size === "number") {
+      return size;
+    }
+
+    if (typeof size === "string") {
+      return fontSize.get(size);
+    }
+
+    return fontSize.get("xl");
+  }, [size, fontSize]);
+
   const customStyle = useMemo(() => {
     return StyleSheet.create({
       icon: {
+        width: iconSize,
+        textAlign: "center",
         ...spacingProps,
         ...style,
       },
     });
-  }, [style, spacingProps]);
+  }, [iconSize, style, spacingProps]);
 
   return (
     <IconComponent
       name={name}
-      size={size || fontSize.get("xl")}
+      size={iconSize}
       color={color || colors.text}
       style={customStyle.icon}
       onPress={onPress && handlePress}

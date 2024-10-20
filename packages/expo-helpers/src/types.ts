@@ -91,7 +91,7 @@ export class AlertManager {
   public alert({
     title,
     message,
-    buttons = [{ title: "Ok", type: "plain", onPress: () => { } }],
+    buttons = [{ title: "Ok", type: "plain", onPress: () => {} }],
     ...params
   }: AlertOptions) {
     return this.ref.show({
@@ -130,7 +130,7 @@ export type Theme = {
 export type IconProps = {
   name: string;
   family?: keyof typeof iconFamilies;
-  size?: number;
+  size?: number | Size;
   color?: string;
   style?: TextStyle;
   onPress?: Press;
@@ -223,7 +223,9 @@ export type AlertOptions = {
 export type AlertProps = {
   toastDuration?: number;
   delay?: number;
+  hideKeyboardOnOpen?: boolean;
 };
+
 export type AlertShowParams =
   | AlertWithType<AlertToastOptions, "toast">
   | AlertWithType<AlertOptions, "alert">
@@ -257,6 +259,7 @@ export type InputProps = {
   style?: ViewStyle;
   type?: "text" | "number" | "email" | "password" | "phone";
   keyboardType?: KeyboardType;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
 } & SpacingProps;
 
 export type BoxProps = {

@@ -26,6 +26,7 @@ export default function Input({
   type = "text",
   icon,
   keyboardType,
+  autoCapitalize,
   ...props
 }: InputProps) {
   const { spacing, colors, radius, fontSize } = useStyles();
@@ -68,6 +69,14 @@ export default function Input({
 
     return "default";
   }, [keyboardType, type]);
+  const customAutoCapitalize = useMemo(() => {
+    if (autoCapitalize) return autoCapitalize;
+
+    if (customKeyboardType === "email-address" || customKeyboardType === "url")
+      return "none";
+
+    return "sentences";
+  }, [customKeyboardType, autoCapitalize]);
 
   const customStyle = useMemo(() => {
     return StyleSheet.create({
@@ -86,7 +95,6 @@ export default function Input({
             flexDirection: "row",
             alignItems: "center",
             marginBottom: spacing.get("xs"),
-            flex: 1,
           }}
         >
           <Text numberOfLines={1} size="l" bold>
@@ -101,7 +109,7 @@ export default function Input({
       )}
       <View
         style={{
-          backgroundColor: colors.background,
+          backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: radius.get("m"),
@@ -124,9 +132,7 @@ export default function Input({
             flex: 1,
             paddingVertical: spacing.get("m"),
           }}
-          autoCapitalize={
-            customKeyboardType === "email-address" ? "none" : undefined
-          }
+          autoCapitalize={customAutoCapitalize}
           keyboardType={customKeyboardType}
           secureTextEntry={secureTextEntry}
         />

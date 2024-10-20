@@ -48,7 +48,7 @@ export default function Checkbox({
     <View
       style={{
         borderWidth: 2.2,
-        backgroundColor: selected ? tint : undefined,
+        backgroundColor: selected ? tint : colors.card,
         borderColor: selected ? tint : colors.border,
         borderRadius: spacing.get("xs"),
         height: spacing.get("xl"),

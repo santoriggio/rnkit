@@ -27,7 +27,7 @@ export default function ButtonsList({
     const ios = StyleSheet.create({
       container: {
         borderRadius: radius.get("m"),
-        backgroundColor: colors.background,
+        backgroundColor: colors.card,
         borderWidth: border ? 1 : 0,
         borderColor: colors.border,
         ...spacingProps,
