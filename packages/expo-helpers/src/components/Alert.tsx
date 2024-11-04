@@ -147,7 +147,7 @@ export default function AlertProvider({
       maxDynamicContentSize={height * 0.7}
       backdropComponent={is_toast ? undefined : renderBackdrop}
       // @ts-ignore
-      containerComponent={FullWindowOverlay}
+      containerComponent={Platform.OS === "ios" ? FullWindowOverlay : undefined}
       enableOverDrag={Platform.select({
         ios: true,
         android: is_toast,
